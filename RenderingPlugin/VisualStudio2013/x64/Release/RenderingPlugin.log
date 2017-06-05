@@ -1,0 +1,55 @@
+﻿Build started 2017/5/10 23:35:11.
+     1>Project "E:\UnityPlugin-master\UnityPlugin-master\RenderingPlugin\VisualStudio2013\RenderingPlugin.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\x86_amd64\CL.exe /c /I../ /Zi /nologo /W3 /WX- /O2 /Oi /GL /D GLEW_STATIC /D WIN32 /D NDEBUG /D _WINDOWS /D _USRDLL /D RENDERINGPLUGIN_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Release\\" /Fd"x64\Release\vc110.pdb" /Gd /TP /errorReport:prompt ..\VideoCap.cpp
+         VideoCap.cpp
+     1>..\VideoCap.cpp(91): warning C4018: '<' : signed/unsigned mismatch
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"E:\UnityPlugin-master\UnityPlugin-master\RenderingPlugin\VisualStudio2013\x64\Release\RenderingPlugin.dll" /INCREMENTAL:NO /NOLOGO opengl32.lib opencv_objdetect2413.lib opencv_ts2413.lib opencv_video2413.lib opencv_nonfree2413.lib opencv_ocl2413.lib opencv_photo2413.lib opencv_stitching2413.lib opencv_superres2413.lib opencv_videostab2413.lib opencv_calib3d2413.lib opencv_contrib2413.lib opencv_core2413.lib opencv_features2d2413.lib opencv_flann2413.lib opencv_gpu2413.lib opencv_highgui2413.lib opencv_imgproc2413.lib opencv_legacy2413.lib opencv_ml2413.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /DEF:"../RenderingPlugin.def" /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"E:\UnityPlugin-master\UnityPlugin-master\RenderingPlugin\VisualStudio2013\x64\Release\RenderingPlugin.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\UnityPlugin-master\UnityPlugin-master\RenderingPlugin\VisualStudio2013\x64\Release\RenderingPlugin.lib" /MACHINE:X64 /DLL x64\Release\glew.obj
+         x64\Release\RenderingPlugin.obj
+         x64\Release\VideoCap.obj
+     1>RenderingPlugin.obj : warning LNK4197: export 'GetRenderEventFunc' specified multiple times; using first specification
+     1>RenderingPlugin.obj : warning LNK4197: export 'UnityPluginUnload' specified multiple times; using first specification
+     1>RenderingPlugin.obj : warning LNK4197: export 'UnityPluginLoad' specified multiple times; using first specification
+     1>RenderingPlugin.obj : warning LNK4197: export 'SetUnityStreamingAssetsPath' specified multiple times; using first specification
+     1>RenderingPlugin.obj : warning LNK4197: export 'SetTextureFromUnity' specified multiple times; using first specification
+     1>RenderingPlugin.obj : warning LNK4197: export 'SetTimeFromUnity' specified multiple times; using first specification
+            Creating library E:\UnityPlugin-master\UnityPlugin-master\RenderingPlugin\VisualStudio2013\x64\Release\RenderingPlugin.lib and object E:\UnityPlugin-master\UnityPlugin-master\RenderingPlugin\VisualStudio2013\x64\Release\RenderingPlugin.exp
+         Generating code
+         Finished generating code
+         RenderingPlugin.vcxproj -> E:\UnityPlugin-master\UnityPlugin-master\RenderingPlugin\VisualStudio2013\x64\Release\RenderingPlugin.dll
+       PostBuildEvent:
+         SETLOCAL
+         echo 1
+         if "x64" == "x86" (
+           set TARGET_PLUGIN_PATH=E:\UnityPlugin-master\UnityPlugin-master\RenderingPlugin\VisualStudio2013\..\..\UnityProject\Assets\Plugins\x86
+         ) else (
+           set TARGET_PLUGIN_PATH=E:\UnityPlugin-master\UnityPlugin-master\RenderingPlugin\VisualStudio2013\..\..\UnityProject\Assets\Plugins\x86_64
+         )
+         echo 2
+         set TARGET_SHADER_PATH=E:\UnityPlugin-master\UnityPlugin-master\RenderingPlugin\VisualStudio2013\..\..\UnityProject\Assets\StreamingAssets\Shaders\DX11_9_1\
+         echo 3
+         echo Target Plugin Path is %TARGET_PLUGIN_PATH%
+         echo Target Shader Path is %TARGET_SHADER_PATH%
+         
+         copy /Y "E:\UnityPlugin-master\UnityPlugin-master\RenderingPlugin\VisualStudio2013\x64\Release\RenderingPlugin.dll" "%TARGET_PLUGIN_PATH%\RenderingPlugin.dll"
+         copy /Y "E:\UnityPlugin-master\UnityPlugin-master\RenderingPlugin\VisualStudio2013\x64\Release\SimpleVertexShader.cso" "%TARGET_SHADER_PATH%SimpleVertexShader.cso"
+         copy /Y "E:\UnityPlugin-master\UnityPlugin-master\RenderingPlugin\VisualStudio2013\x64\Release\SimplePixelShader.cso" "%TARGET_SHADER_PATH%SimplePixelShader.cso"
+         
+         
+         ENDLOCAL
+         
+         :VCEnd
+         1
+         2
+         3
+         Target Plugin Path is E:\UnityPlugin-master\UnityPlugin-master\RenderingPlugin\VisualStudio2013\..\..\UnityProject\Assets\Plugins\x86_64
+         Target Shader Path is E:\UnityPlugin-master\UnityPlugin-master\RenderingPlugin\VisualStudio2013\..\..\UnityProject\Assets\StreamingAssets\Shaders\DX11_9_1\
+         已复制         1 个文件。
+         已复制         1 个文件。
+         已复制         1 个文件。
+     1>Done Building Project "E:\UnityPlugin-master\UnityPlugin-master\RenderingPlugin\VisualStudio2013\RenderingPlugin.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:05.05

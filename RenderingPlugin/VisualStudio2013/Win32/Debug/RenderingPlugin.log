@@ -1,0 +1,30 @@
+﻿  compilation object save succeeded; see D:\UnityPlugin-master\UnityPlugin-master\RenderingPlugin\VisualStudio2013\Win32\Debug\SimplePixelShader.cso
+  compilation object save succeeded; see D:\UnityPlugin-master\UnityPlugin-master\RenderingPlugin\VisualStudio2013\Win32\Debug\SimpleVertexShader.cso
+  glew.c
+  VideoCap.cpp
+  RenderingPlugin.cpp
+d:\unityplugin-master\unityplugin-master\renderingplugin\renderingplugin.cpp(88): warning C4996: 'freopen': This function or variable may be unsafe. Consider using freopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+          c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(233) : see declaration of 'freopen'
+d:\unityplugin-master\unityplugin-master\renderingplugin\renderingplugin.cpp(89): warning C4996: 'freopen': This function or variable may be unsafe. Consider using freopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+          c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(233) : see declaration of 'freopen'
+d:\unityplugin-master\unityplugin-master\renderingplugin\renderingplugin.cpp(221): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+          c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(357) : see declaration of 'sprintf'
+  Generating Code...
+glew.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/SAFESEH' specification
+     Creating library D:\UnityPlugin-master\UnityPlugin-master\RenderingPlugin\VisualStudio2013\Win32\Debug\RenderingPlugin.lib and object D:\UnityPlugin-master\UnityPlugin-master\RenderingPlugin\VisualStudio2013\Win32\Debug\RenderingPlugin.exp
+RenderingPlugin.obj : error LNK2019: unresolved external symbol "void __cdecl cv::fastFree(void *)" (?fastFree@cv@@YAXPAX@Z) referenced in function "public: __thiscall cv::Mat::~Mat(void)" (??1Mat@cv@@QAE@XZ)
+VideoCap.obj : error LNK2001: unresolved external symbol "void __cdecl cv::fastFree(void *)" (?fastFree@cv@@YAXPAX@Z)
+RenderingPlugin.obj : error LNK2019: unresolved external symbol "public: void __thiscall cv::Mat::deallocate(void)" (?deallocate@Mat@cv@@QAEXXZ) referenced in function "public: void __thiscall cv::Mat::release(void)" (?release@Mat@cv@@QAEXXZ)
+VideoCap.obj : error LNK2001: unresolved external symbol "public: void __thiscall cv::Mat::deallocate(void)" (?deallocate@Mat@cv@@QAEXXZ)
+RenderingPlugin.obj : error LNK2019: unresolved external symbol "public: void __thiscall cv::Mat::copySize(class cv::Mat const &)" (?copySize@Mat@cv@@QAEXABV12@@Z) referenced in function "public: __thiscall cv::Mat::Mat(class cv::Mat const &)" (??0Mat@cv@@QAE@ABV01@@Z)
+VideoCap.obj : error LNK2001: unresolved external symbol "public: void __thiscall cv::Mat::copySize(class cv::Mat const &)" (?copySize@Mat@cv@@QAEXABV12@@Z)
+RenderingPlugin.obj : error LNK2019: unresolved external symbol "int __cdecl cv::_interlockedExchangeAdd(int *,int)" (?_interlockedExchangeAdd@cv@@YAHPAHH@Z) referenced in function "public: __thiscall cv::Mat::Mat(class cv::Mat const &)" (??0Mat@cv@@QAE@ABV01@@Z)
+VideoCap.obj : error LNK2001: unresolved external symbol "int __cdecl cv::_interlockedExchangeAdd(int *,int)" (?_interlockedExchangeAdd@cv@@YAHPAHH@Z)
+VideoCap.obj : error LNK2019: unresolved external symbol "public: __thiscall cv::_InputArray::_InputArray(class cv::Mat const &)" (??0_InputArray@cv@@QAE@ABVMat@1@@Z) referenced in function "public: class cv::Mat __thiscall VideoSource::get_rgba(void)" (?get_rgba@VideoSource@@QAE?AVMat@cv@@XZ)
+VideoCap.obj : error LNK2019: unresolved external symbol "public: __thiscall cv::_OutputArray::_OutputArray(class cv::Mat &)" (??0_OutputArray@cv@@QAE@AAVMat@1@@Z) referenced in function "public: class cv::Mat __thiscall VideoSource::get_rgba(void)" (?get_rgba@VideoSource@@QAE?AVMat@cv@@XZ)
+VideoCap.obj : error LNK2019: unresolved external symbol "public: class cv::Mat & __thiscall cv::Mat::operator=(class cv::Scalar_<double> const &)" (??4Mat@cv@@QAEAAV01@ABV?$Scalar_@N@1@@Z) referenced in function "public: bool __thiscall VideoSource::read_calib(void)" (?read_calib@VideoSource@@QAE_NXZ)
+VideoCap.obj : error LNK2019: unresolved external symbol "void __cdecl cv::convertMaps(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &,int,bool)" (?convertMaps@cv@@YAXABV_InputArray@1@0ABV_OutputArray@1@1H_N@Z) referenced in function "public: bool __thiscall VideoSource::read_calib(void)" (?read_calib@VideoSource@@QAE_NXZ)
+VideoCap.obj : error LNK2019: unresolved external symbol "void __cdecl cv::cvtColor(class cv::_InputArray const &,class cv::_OutputArray const &,int,int)" (?cvtColor@cv@@YAXABV_InputArray@1@ABV_OutputArray@1@HH@Z) referenced in function "public: class cv::Mat __thiscall VideoSource::get_rgba(void)" (?get_rgba@VideoSource@@QAE?AVMat@cv@@XZ)
+VideoCap.obj : error LNK2019: unresolved external symbol "public: __thiscall cv::VideoCapture::VideoCapture(void)" (??0VideoCapture@cv@@QAE@XZ) referenced in function "public: __thiscall VideoSource::VideoSource(void)" (??0VideoSource@@QAE@XZ)
+VideoCap.obj : error LNK2019: unresolved external symbol "public: virtual __thiscall cv::VideoCapture::~VideoCapture(void)" (??1VideoCapture@cv@@UAE@XZ) referenced in function __unwindfunclet$??0VideoSource@@QAE@XZ$0
+D:\UnityPlugin-master\UnityPlugin-master\RenderingPlugin\VisualStudio2013\Win32\Debug\RenderingPlugin.dll : fatal error LNK1120: 11 unresolved externals
