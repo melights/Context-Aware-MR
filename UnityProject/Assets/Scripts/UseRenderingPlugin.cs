@@ -95,19 +95,14 @@ public class UseRenderingPlugin : MonoBehaviour
 	private GameObject SingleCamera;
 	private GameObject ArObject;
     private GameObject Background;
-    IEnumerator Start()
+    void Start()
 	{
         SingleCamera = GameObject.Find("Camera");
         Camera cam = Camera.main;
         Background = GameObject.Find("Plane");
         ArObject = GameObject.Find("Sphere");
         cam.aspect = width / height;
-        //设置为正交
         cam.orthographic = true;
-        //设置大小为屏幕宽度的一半。乘以10是为了以后使用物体缩放时直接使用像素
-       // cam.orthographicSize = Screen.height / 2 * 10;
-        //设置背景Plane的大小
-        //gameObject.transform.localScale = new Vector3(cam.pixelWidth, 1, cam.pixelHeight);
 
         OpenWebCam(-1);
         texture = new Texture2D(width, height, TextureFormat.RGFloat, false);
@@ -127,65 +122,14 @@ public class UseRenderingPlugin : MonoBehaviour
             }
         }
         texture.Apply();
-        //render_sc_right.enabled = true;
-        /*
-		SingleCamera = GameObject.Find ("SingleCamera");
-		ArObject = GameObject.Find ("Sphere");
-        Debug.Log("WRTF!");
-        if (OpenWebCam (0)) {
-			Debug.Log("init success!");
 
-			//making a new texture to shader
-			texture = new Texture2D (width, height, TextureFormat.RGFloat, false);
-			Material mat = GetComponent<Renderer>().material;
-			mat.SetTexture ("_Texture2", texture);
-			
-			//copying the calib params from opencv dll
-			map_x1 = new float[width * height];
-			map_y1 = new float[width * height];
-
-			IntPtr ptr =  get_map_x1 ();
-			Marshal.Copy (ptr, map_x1, 0, width * height);
-
-			ptr = get_map_y1 ();
-			Marshal.Copy (ptr, map_y1, 0, width * height);
-
-//			Debug.Log("map x1 0: "+map_x1[1000]);
-//			Debug.Log("map x1 1: "+map_x1[1001]);
-//			Debug.Log("map x1 2: "+map_x1[2]);
-//			Debug.Log("map x1 3: "+map_x1[3]);
-//			Debug.Log("map y1 0: "+map_y1[1000]);
-//			Debug.Log("map y1 1: "+map_y1[1001]);
-//			Debug.Log("map y1 2: "+map_y1[2]);
-//			Debug.Log("map y1 3: "+map_y1[3]);
-
-			for (int i=0; i<width; ++i) {
-				for(int j=0; j<height; ++j){
-					Color color;
-					color.r = map_x1[j*width+i]/(float)width;
-					color.g = map_y1[j*width+i]/(float)height;
-					//				color.r = ((float)i-0.0f)/(float)width;
-					//				color.g = ((float)j-0.0f)/(float)height;
-					color.b = 0.0f;
-					color.a = 1.0f;
-					texture.SetPixel(i,j,color);
-				}
-			}
-			
-			texture.Apply ();
-
-			init_success = true;
-
-			//render_sc_right.enabled = true;
-		} else {
-			Debug.Log("init false");
-		}
-        */
         SetUnityStreamingAssetsPath(Application.streamingAssetsPath);
 
 		CreateTextureAndPassToPlugin();
-		yield return StartCoroutine("CallPluginAtEndOfFrames");
-	}
+        //	yield return StartCoroutine("CallPluginAtEndOfFrames");
+        InvokeRepeating("CallPluginAtEndOfFrames", 0.0f, 1.0f / 5.0f);
+        //yield return;  // 30 fps
+    }
 
 	private void CreateTextureAndPassToPlugin()
 	{
@@ -260,15 +204,17 @@ public class UseRenderingPlugin : MonoBehaviour
     }
 
 
-	private IEnumerator CallPluginAtEndOfFrames()
+	private void CallPluginAtEndOfFrames()
 	{
-		while (true) {
-            System.Threading.Thread.Sleep(100);
+		//while (true) {
+            
+            // todo: 30 FPS playback, or jsut be able to control play back speed
+            //System.Threading.Thread.Sleep(100);
 			//StereoCamera.transform.Rotate(Vector3.up * 50f * Time.deltaTime);
 
-			float time1 = Time.realtimeSinceStartup;
+			//float time1 = Time.realtimeSinceStartup;
 			// Wait until all frame rendering is done
-			yield return new WaitForEndOfFrame();
+			//yield return new WaitForEndOfFrame();
 
 			// Set time for the plugin
 			SetTimeFromUnity (Time.timeSinceLevelLoad);
@@ -308,7 +254,7 @@ public class UseRenderingPlugin : MonoBehaviour
             SingleCamera.transform.localRotation = arRotation;
             SingleCamera.transform.Rotate(Vector3.up * 180f);
             SingleCamera.transform.Rotate(Vector3.forward * 180f);
-		}
+		//}
 	}
 
 	void OnApplicationQuit()
