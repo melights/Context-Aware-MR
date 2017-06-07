@@ -40,8 +40,18 @@ public class Triangle  : UnityEngine.Object
 	public Vector2 uv_pt1;
 	public Vector2 uv_pt2;
 	public Transform trans;
+
+    public int materialIndex;
 	
-	public Triangle (Vector3 pt0, Vector3 pt1, Vector3 pt2, Vector2 uv_pt0, Vector2 uv_pt1, Vector2 uv_pt2, Transform trans)
+	public Triangle (
+        Vector3 pt0,
+        Vector3 pt1,
+        Vector3 pt2,
+        Vector2 uv_pt0,
+        Vector2 uv_pt1,
+        Vector2 uv_pt2,
+        Transform trans,
+        int materialIndex)
 	{
 		this.pt0 = pt0;
 		this.pt1 = pt1;
@@ -50,7 +60,9 @@ public class Triangle  : UnityEngine.Object
 		this.uv_pt1 = uv_pt1;
 		this.uv_pt2 = uv_pt2;
 		this.trans = trans;
-		UpdateVerts();
+        this.materialIndex = materialIndex;
+
+        UpdateVerts();
 	}
 	
 	public void UpdateVerts(){

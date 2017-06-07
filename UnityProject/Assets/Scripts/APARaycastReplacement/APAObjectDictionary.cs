@@ -106,23 +106,35 @@ public class APAObjectDictionary : MonoBehaviour {
 
 	Triangle[] GetTriangles(GameObject go){
 		Mesh mesh = go.GetComponent<MeshFilter>().sharedMesh;
-		int[] vIndex = mesh.triangles;
+
 		Vector3[] verts = mesh.vertices;
 		Vector2[] uvs = mesh.uv;
 		List<Triangle> triangleList = new List<Triangle>();
-		int i = 0;
-		while (i < vIndex.Length){
-			triangleList.Add(
-				new Triangle(
-				verts[vIndex[i + 0]], 
-				verts[vIndex[i + 1]], 
-				verts[vIndex[i + 2]], 
-				uvs[vIndex[i + 0]],
-				uvs[vIndex[i + 1]],
-				uvs[vIndex[i + 2]],
-				go.transform));
-			i += 3;
-		}
+
+        int subMeshCount = mesh.subMeshCount;
+
+        // every material has a seperate triangle list
+        // for each sub mesh
+        for (int sm = 0; sm < subMeshCount; sm++)
+        {
+            int[] vIndex = mesh.GetTriangles(sm);
+            int i = 0;
+            while (i < vIndex.Length)
+            {
+                triangleList.Add(
+                    new Triangle(
+                    verts[vIndex[i + 0]],
+                    verts[vIndex[i + 1]],
+                    verts[vIndex[i + 2]],
+                    uvs[vIndex[i + 0]],
+                    uvs[vIndex[i + 1]],
+                    uvs[vIndex[i + 2]],
+                    go.transform,
+                    sm
+                    ));
+                i += 3;
+            }
+        }
 		return triangleList.ToArray();
 	}
 		

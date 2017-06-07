@@ -37,6 +37,7 @@ public class APARaycastHit{
 	public Vector2 barycentricCoordinate;
 	public Vector2 textureCoord;
 	public Vector3 point;
+    public Triangle triangle;
 	
 	public APARaycastHit(){
 		this.distance = 0f;
@@ -44,6 +45,8 @@ public class APARaycastHit{
 		this.textureCoord = Vector2.zero;
 		this.barycentricCoordinate = Vector2.zero;
 		this.point = Vector3.zero;
+        // hack
+        //this.triangle = new Triangle(Vector3.zero, Vector3.zero, Vector3.zero, Vector2.zero, Vector2.zero, Vector2.zero, transform);
 	}
 	
 	public APARaycastHit(Transform transform, float distance, Vector2 barycentricCoordinate){
@@ -140,30 +143,35 @@ public class APARaycast : MonoBehaviour {
 		}
 		return hits.Count > 0;
 	}
-	
-	static List<APARaycastHit> RecurseOctreeBounds(APAOctree octree, Ray ray){
-		List<APARaycastHit> hits = new List<APARaycastHit>();
-		float dist = 0f;
-		Vector2 baryCoord = new Vector2();
-		for (int i = 0; i < octree.m_children.Count; i++){
-			if (octree.m_children[i].bounds.IntersectRay(ray)){
-				for (int k = 0; k < octree.m_children[i].triangles.Count; k++){
-					if (TestIntersection(octree.m_children[i].triangles[k], ray, out dist, out baryCoord)){
-						hits.Add(BuildRaycastHit(octree.m_children[i].triangles[k], dist, baryCoord));
-					}
-				}
-				hits.AddRange(RecurseOctreeBounds(octree.m_children[i], ray));	
-			}
-		}
-		return hits;
-	}
-	
-	static APARaycastHit BuildRaycastHit(Triangle hitTriangle, float distance, Vector2 barycentricCoordinate){
+
+    static List<APARaycastHit> RecurseOctreeBounds(APAOctree octree, Ray ray)
+    {
+        List<APARaycastHit> hits = new List<APARaycastHit>();
+        float dist = 0f;
+        Vector2 baryCoord = new Vector2();
+        if (octree.bounds.IntersectRay(ray))
+        {
+            for (int i = 0; i < octree.triangles.Count; i++)
+            {
+                if (TestIntersection(octree.triangles[i], ray, out dist, out baryCoord))
+                {
+                    hits.Add(BuildRaycastHit(octree.triangles[i], dist, baryCoord));
+                }
+            }
+        }
+        for (int i = 0; i < octree.m_children.Count; i++)
+        {
+            hits.AddRange(RecurseOctreeBounds(octree.m_children[i], ray));
+        }
+        return hits;
+    }
+
+    static APARaycastHit BuildRaycastHit(Triangle hitTriangle, float distance, Vector2 barycentricCoordinate){
 
 		APARaycastHit returnedHit = new APARaycastHit(hitTriangle.trans, distance, barycentricCoordinate);
 		returnedHit.textureCoord = hitTriangle.uv_pt0 + ((hitTriangle.uv_pt1 - hitTriangle.uv_pt0) * barycentricCoordinate.x) + ((hitTriangle.uv_pt2 - hitTriangle.uv_pt0) * barycentricCoordinate.y);
 		returnedHit.point = hitTriangle.pt0 + ((hitTriangle.pt1 - hitTriangle.pt0) * barycentricCoordinate.x) + ((hitTriangle.pt2 - hitTriangle.pt0) * barycentricCoordinate.y);
-		
+        returnedHit.triangle = hitTriangle;
 		return returnedHit;
 		
 	}
