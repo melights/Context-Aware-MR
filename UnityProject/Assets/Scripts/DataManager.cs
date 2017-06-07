@@ -26,8 +26,18 @@ public class DataManager : MonoBehaviour
         
             string name = thisMaterial["NAME"];
             string colHex = thisMaterial["HEX_COL"];
+
             Color col = HexUtility.hexToColor(colHex);
-            m_materialData[i] = new MaterialStruct(name, col);
+            string hexColUnityFormat = HexUtility.colorToHex(col);
+
+            Debug.Log(name + hexColUnityFormat);
+
+            m_materialData[i] = new MaterialStruct(name, hexColUnityFormat, col);
         }
+    }
+
+    public MaterialStruct[] GetMaterialDataArray()
+    {
+        return m_materialData;
     }
 }

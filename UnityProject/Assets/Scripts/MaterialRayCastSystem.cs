@@ -22,12 +22,16 @@ public class MaterialRayCastSystem : MonoBehaviour {
     [SerializeField]
     private Camera m_renderCam;
 
+    [SerializeField]
+    private Color m_errorCol;
+
     Vector3 lastHitPos = Vector3.zero;
+
+    private MaterialStruct[] m_materialDataCopy;
 
     // Use this for initialization
     void Start () {
-
-
+        m_materialDataCopy = m_dataManager.GetMaterialDataArray();
     }
 	
 	// Update is called once per frame
@@ -42,10 +46,45 @@ public class MaterialRayCastSystem : MonoBehaviour {
             if (APARaycast.Raycast(r, out hit))
             {
                 lastHitPos = hit.point;
+
+                Debug.Log("Hit " + hit.transform.gameObject.name);
+
+                var go = hit.transform.gameObject;
+                var goMat = go.GetComponent<Renderer>().material;
+                var matMainTex = goMat.mainTexture as Texture2D;
+                Vector2 pixelUv = hit.textureCoord;
+                pixelUv.x *= matMainTex.width;
+                pixelUv.y *= matMainTex.height;
+
+                var hitCol = matMainTex.GetPixel((int)pixelUv.x, (int)pixelUv.y);
+                
+                // find material struct
+                // todo: some sort of margin of error?
+                var mat = FindMaterialStructFromColour(hitCol, ref m_materialDataCopy);
+
+                string outputString = "";
+
+                if (mat != null)
+                {
+                    outputString = mat.m_name;
+                }
+                else
+                {
+                    Debug.LogError("Couldn't Find material!");
+                    outputString = "Error";
+                    hitCol = m_errorCol;
+                }
+
+                m_uiMaterialColourOutput.color = hitCol;
+                m_uiMaterialTextOutput.text = outputString;
+
             }
             else
             {
-                Debug.Log("Miss! " + APARaycast.intersectionErrorType);
+               // Debug.Log("Miss! " + APARaycast.intersectionErrorType);
+
+                m_uiMaterialColourOutput.color = m_errorCol;
+                m_uiMaterialTextOutput.text = "No Data / Ray Missed : " + APARaycast.intersectionErrorType;
             }
         }
 
@@ -53,6 +92,24 @@ public class MaterialRayCastSystem : MonoBehaviour {
 
         m_debugHitPoint.position = lastHitPos;
 
+    }
+
+    MaterialStruct FindMaterialStructFromColour(Color col, ref MaterialStruct[] ms)
+    {
+        string hexId = HexUtility.colorToHex(col);
+
+        Debug.Log("Find " + hexId);
+
+        for (int i = 0; i < ms.Length; i++)
+        {
+            var hex = ms[i].m_hexCol;
+
+            if (hex == hexId)
+            {
+                return ms[i];
+            }
+        }
+        return null;
     }
 
 }
