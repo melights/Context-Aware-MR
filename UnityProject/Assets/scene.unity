@@ -900,6 +900,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   init_success: 0
+  m_targetVideoFrameRate: 5
 --- !u!1001 &1891206552
 Prefab:
   m_ObjectHideFlags: 0
