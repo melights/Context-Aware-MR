@@ -89,12 +89,13 @@ public class UseRenderingPlugin : MonoBehaviour
 	private float[] Pose = new float[16];
 	private Matrix4x4 W2C_matrix;
 
-	public Boolean init_success = false;
-	//public UseRenderingPlugin_right render_sc_right;
+	public bool init_success = false;
+    public int m_targetVideoFrameRate = 30;
 
 	private GameObject SingleCamera;
 	private GameObject ArObject;
     private GameObject Background;
+
     void Start()
 	{
         SingleCamera = GameObject.Find("Camera");
@@ -127,7 +128,7 @@ public class UseRenderingPlugin : MonoBehaviour
 
 		CreateTextureAndPassToPlugin();
         //	yield return StartCoroutine("CallPluginAtEndOfFrames");
-        InvokeRepeating("CallPluginAtEndOfFrames", 0.0f, 1.0f / 5.0f);
+        InvokeRepeating("CallPluginAtEndOfFrames", 0.0f, 1.0f / ((float)m_targetVideoFrameRate));
         //yield return;  // 30 fps
     }
 
@@ -243,7 +244,7 @@ public class UseRenderingPlugin : MonoBehaviour
             W2C_matrix.m31 = (float)Pose[13];
             W2C_matrix.m32 = (float)Pose[14];
             W2C_matrix.m33 = (float)Pose[15];
-            Debug.Log(W2C_matrix);
+          //  Debug.Log(W2C_matrix);
             Matrix4x4 transformationMatrix = LHMatrixFromRHMatrix(W2C_matrix);
             Matrix4x4 pose = transformationMatrix;
 
