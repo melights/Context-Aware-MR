@@ -25,6 +25,9 @@ public class MaterialRayCastSystem : MonoBehaviour {
     [SerializeField]
     private Color m_errorCol;
 
+    [SerializeField]
+    private GameObject m_materialMeshRenderer;
+
     Vector3 lastHitPos = Vector3.zero;
 
     private MaterialStruct[] m_materialDataCopy;
@@ -94,7 +97,7 @@ public class MaterialRayCastSystem : MonoBehaviour {
 
     }
 
-    MaterialStruct FindMaterialStructFromColour(Color col, ref MaterialStruct[] ms)
+    private MaterialStruct FindMaterialStructFromColour(Color col, ref MaterialStruct[] ms)
     {
         string hexId = HexUtility.colorToHex(col);
 
@@ -110,6 +113,11 @@ public class MaterialRayCastSystem : MonoBehaviour {
             }
         }
         return null;
+    }
+
+    public void ToggleMeshRenderer()
+    {
+        m_materialMeshRenderer.SetActive(!m_materialMeshRenderer.activeSelf);
     }
 
 }
