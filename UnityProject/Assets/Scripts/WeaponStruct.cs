@@ -8,7 +8,7 @@ public struct WeaponStruct {
     public string m_soundPath;
     public List<string> m_hitParticlePaths;
 
-    private List<GameObject> m_prefabHitParticles;
+    public List<GameObject> m_prefabHitParticles;
 
     public WeaponStruct(
         string name,

@@ -1,4 +1,4 @@
-/* *****************************************************************************
+﻿/* *****************************************************************************
  * 
  *								EDUCATION RESEARCH GROUP
  *							MORGRIDGE INSTITUTE FOR RESEARCH
@@ -108,6 +108,7 @@ public class APAObjectDictionary : MonoBehaviour {
 		Mesh mesh = go.GetComponent<MeshFilter>().sharedMesh;
 
 		Vector3[] verts = mesh.vertices;
+        Vector3[] nrms = mesh.normals;
 		Vector2[] uvs = mesh.uv;
 		List<Triangle> triangleList = new List<Triangle>();
 
@@ -126,6 +127,9 @@ public class APAObjectDictionary : MonoBehaviour {
                     verts[vIndex[i + 0]],
                     verts[vIndex[i + 1]],
                     verts[vIndex[i + 2]],
+                    nrms[vIndex[i + 0]],
+                    nrms[vIndex[i + 1]],
+                    nrms[vIndex[i + 2]],
                     uvs[vIndex[i + 0]],
                     uvs[vIndex[i + 1]],
                     uvs[vIndex[i + 2]],

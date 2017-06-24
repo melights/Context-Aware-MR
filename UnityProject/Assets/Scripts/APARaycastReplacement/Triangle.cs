@@ -1,4 +1,4 @@
-/* *****************************************************************************
+﻿/* *****************************************************************************
  * 
  *								EDUCATION RESEARCH GROUP
  *							MORGRIDGE INSTITUTE FOR RESEARCH
@@ -35,8 +35,12 @@ public class Triangle  : UnityEngine.Object
 	public Vector3 pt0;
 	public Vector3 pt1;
 	public Vector3 pt2;
-	
-	public Vector2 uv_pt0;
+
+    public Vector3 nrm_pt0;
+    public Vector3 nrm_pt1;
+    public Vector3 nrm_pt2;
+
+    public Vector2 uv_pt0;
 	public Vector2 uv_pt1;
 	public Vector2 uv_pt2;
 	public Transform trans;
@@ -47,6 +51,9 @@ public class Triangle  : UnityEngine.Object
         Vector3 pt0,
         Vector3 pt1,
         Vector3 pt2,
+        Vector3 nrm_pt0,
+        Vector3 nrm_pt1,
+        Vector3 nrm_pt2,
         Vector2 uv_pt0,
         Vector2 uv_pt1,
         Vector2 uv_pt2,
@@ -56,7 +63,10 @@ public class Triangle  : UnityEngine.Object
 		this.pt0 = pt0;
 		this.pt1 = pt1;
 		this.pt2 = pt2;
-		this.uv_pt0 = uv_pt0;
+        this.nrm_pt0 = nrm_pt0;
+        this.nrm_pt1 = nrm_pt1;
+        this.nrm_pt2 = nrm_pt2;
+        this.uv_pt0 = uv_pt0;
 		this.uv_pt1 = uv_pt1;
 		this.uv_pt2 = uv_pt2;
 		this.trans = trans;

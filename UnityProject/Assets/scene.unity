@@ -373,6 +373,7 @@ Transform:
   m_LocalScale: {x: 1, y: -1, z: -1}
   m_Children:
   - {fileID: 936761078}
+  - {fileID: 790441707}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 180}
@@ -622,6 +623,34 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &790441706
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 790441707}
+  m_Layer: 0
+  m_Name: ParticleParent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &790441707
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 790441706}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 204948616}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &874633723
 GameObject:
   m_ObjectHideFlags: 0
@@ -693,12 +722,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0e462e626014e547a8e64ef1c206ad8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_uiMaterialTextOutput: {fileID: 412954220}
-  m_uiMaterialColourOutput: {fileID: 36763579}
   m_dataManager: {fileID: 874633725}
-  m_debugHitPoint: {fileID: 8018596}
-  m_renderCam: {fileID: 1316961506}
-  m_errorCol: {r: 0, g: 0, b: 0, a: 0}
   m_materialMeshRenderer: {fileID: 204948615}
 --- !u!114 &874633728
 MonoBehaviour:
@@ -712,11 +736,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_materialRayCastSystem: {fileID: 874633727}
+  m_dataManager: {fileID: 874633725}
   m_errorCol: {r: 0, g: 0, b: 0, a: 0}
   m_renderCam: {fileID: 1316961506}
   m_uiMaterialTextOutput: {fileID: 412954220}
   m_uiMaterialColourOutput: {fileID: 36763579}
   m_debugHitPoint: {fileID: 8018596}
+  m_particleParent: {fileID: 790441706}
 --- !u!4 &936761078 stripped
 Transform:
   m_PrefabParentObject: {fileID: 400006, guid: 9abd6b0f07dd48e42b6203c68fb1d803, type: 3}
@@ -1080,7 +1106,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400006, guid: 9abd6b0f07dd48e42b6203c68fb1d803, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 100004, guid: 9abd6b0f07dd48e42b6203c68fb1d803, type: 3}
       propertyPath: m_IsActive

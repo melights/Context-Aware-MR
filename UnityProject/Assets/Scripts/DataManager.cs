@@ -34,7 +34,7 @@ public class DataManager : MonoBehaviour
 
             //Debug.Log(name + hexColUnityFormat);
 
-            m_materialData[i] = new MaterialStruct(name, hexColUnityFormat, col);
+            m_materialData[i] = new MaterialStruct(name, hexColUnityFormat, col, i);
         }
     }
 

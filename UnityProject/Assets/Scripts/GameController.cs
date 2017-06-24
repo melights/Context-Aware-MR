@@ -9,6 +9,9 @@ public class GameController : MonoBehaviour {
     private MaterialRayCastSystem m_materialRayCastSystem;
 
     [SerializeField]
+    private DataManager m_dataManager;
+
+    [SerializeField]
     private Color m_errorCol;
 
     [SerializeField]
@@ -23,16 +26,22 @@ public class GameController : MonoBehaviour {
     [SerializeField]
     private Transform m_debugHitPoint;
 
-    Vector3 lastHitPos = Vector3.zero;
+    [SerializeField]
+    private GameObject m_particleParent;
+
+    private Vector3 lastHitPos = Vector3.zero;
+
+    private WeaponStruct[] m_weaponDataCopy;
 
     // Use this for initialization
     void Start () {
-		
-	}
+        m_weaponDataCopy = m_dataManager.GetWeaponDataArray();
+    }
 	
 	// Update is called once per frame
 	void Update () {
 
+        // Fire Ray
         if (Input.GetMouseButtonDown(0))
         {
             Ray r = m_renderCam.ScreenPointToRay(Input.mousePosition);
@@ -47,8 +56,29 @@ public class GameController : MonoBehaviour {
 
                 if (mat != null)
                 {
+                    // We know the material...so...
                     finalMaterialName = mat.m_name;
                     finalMaterialColour = mat.m_colour;
+
+                    // Grab Weapon Struct
+                    int weaponIndex = 0;
+                    var weaponStruct = m_weaponDataCopy[weaponIndex];
+
+
+
+                    // Spawn Particle Effects
+                    // uses material index to go into array
+                    var newParticle = Instantiate(weaponStruct.m_prefabHitParticles[mat.m_index]) as GameObject;
+                    newParticle.transform.SetParent(m_particleParent.transform, false);
+
+                    // todo: orientate to normal
+                    var wdsNrm = hit.transform.TransformVector(hit.normal);
+                    newParticle.transform.SetPositionAndRotation(hit.point, Quaternion.LookRotation(wdsNrm, Vector3.up));
+
+                    // todo: Play Sounds
+
+
+
                 }
                 else
                 {

@@ -1,4 +1,4 @@
-/* *****************************************************************************
+﻿/* *****************************************************************************
  * 
  *								EDUCATION RESEARCH GROUP
  *							MORGRIDGE INSTITUTE FOR RESEARCH
@@ -37,6 +37,7 @@ public class APARaycastHit{
 	public Vector2 barycentricCoordinate;
 	public Vector2 textureCoord;
 	public Vector3 point;
+    public Vector3 normal;
     public Triangle triangle;
 	
 	public APARaycastHit(){
@@ -45,6 +46,7 @@ public class APARaycastHit{
 		this.textureCoord = Vector2.zero;
 		this.barycentricCoordinate = Vector2.zero;
 		this.point = Vector3.zero;
+        this.normal = Vector3.zero;
         // hack
         //this.triangle = new Triangle(Vector3.zero, Vector3.zero, Vector3.zero, Vector2.zero, Vector2.zero, Vector2.zero, transform);
 	}
@@ -55,6 +57,7 @@ public class APARaycastHit{
 		this.barycentricCoordinate = barycentricCoordinate;
 		this.textureCoord = Vector2.zero;
 		this.point = Vector3.zero;
+        this.normal = Vector3.zero;
 	}
 }
 
@@ -171,9 +174,10 @@ public class APARaycast : MonoBehaviour {
 		APARaycastHit returnedHit = new APARaycastHit(hitTriangle.trans, distance, barycentricCoordinate);
 		returnedHit.textureCoord = hitTriangle.uv_pt0 + ((hitTriangle.uv_pt1 - hitTriangle.uv_pt0) * barycentricCoordinate.x) + ((hitTriangle.uv_pt2 - hitTriangle.uv_pt0) * barycentricCoordinate.y);
 		returnedHit.point = hitTriangle.pt0 + ((hitTriangle.pt1 - hitTriangle.pt0) * barycentricCoordinate.x) + ((hitTriangle.pt2 - hitTriangle.pt0) * barycentricCoordinate.y);
+        returnedHit.normal = hitTriangle.nrm_pt0 + ((hitTriangle.nrm_pt1 - hitTriangle.nrm_pt0) * barycentricCoordinate.x) + ((hitTriangle.nrm_pt2 - hitTriangle.nrm_pt0) * barycentricCoordinate.y);
         returnedHit.triangle = hitTriangle;
 		return returnedHit;
-		
+	
 	}
 	
 	/// <summary>
