@@ -69,9 +69,7 @@ public class DataManager : MonoBehaviour
 
             m_weaponData[i] = new WeaponStruct(name, soundPathActivateWeapon, particlePathHit);
         }
-
     }
-
 
     public MaterialStruct[] GetMaterialDataArray()
     {

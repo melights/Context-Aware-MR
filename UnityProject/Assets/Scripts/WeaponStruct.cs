@@ -6,7 +6,9 @@ public struct WeaponStruct {
 
     public string m_name;
     public string m_soundPath;
-    public List<string> m_particleHitPaths;
+    public List<string> m_hitParticlePaths;
+
+    private List<GameObject> m_prefabHitParticles;
 
     public WeaponStruct(
         string name,
@@ -17,7 +19,20 @@ public struct WeaponStruct {
     {
         m_name = name;
         m_soundPath = soundPath;
-        m_particleHitPaths = particleHitPaths;
+        m_hitParticlePaths = particleHitPaths;
+
+        m_prefabHitParticles = new List<GameObject>();
+
+        // Load all the prefabs up!
+        // todo: this isn't the most efficient way of doing this
+        // as we could be calling resource load on same elements for different weapons
+        // but whatever
+
+        for (int i = 0; i < particleHitPaths.Count; i++)
+        {
+            var prefabGo = Resources.Load(particleHitPaths[i]) as GameObject;
+            m_prefabHitParticles.Add(prefabGo);
+        }
     }
 
     //public string SOUND_PATH_ACTIVATE_WEAPON;
