@@ -633,6 +633,7 @@ GameObject:
   - component: {fileID: 874633725}
   - component: {fileID: 874633726}
   - component: {fileID: 874633727}
+  - component: {fileID: 874633728}
   m_Layer: 0
   m_Name: ManagerSystems
   m_TagString: Untagged
@@ -699,6 +700,23 @@ MonoBehaviour:
   m_renderCam: {fileID: 1316961506}
   m_errorCol: {r: 0, g: 0, b: 0, a: 0}
   m_materialMeshRenderer: {fileID: 204948615}
+--- !u!114 &874633728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 874633723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0b8f01e4836b914ebdd2c44128af6e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_materialRayCastSystem: {fileID: 874633727}
+  m_errorCol: {r: 0, g: 0, b: 0, a: 0}
+  m_renderCam: {fileID: 1316961506}
+  m_uiMaterialTextOutput: {fileID: 412954220}
+  m_uiMaterialColourOutput: {fileID: 36763579}
+  m_debugHitPoint: {fileID: 8018596}
 --- !u!4 &936761078 stripped
 Transform:
   m_PrefabParentObject: {fileID: 400006, guid: 9abd6b0f07dd48e42b6203c68fb1d803, type: 3}
@@ -1024,7 +1042,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   init_success: 0
-  m_targetVideoFrameRate: 5
+  m_targetVideoFrameRate: 0
 --- !u!1001 &1891206552
 Prefab:
   m_ObjectHideFlags: 0
