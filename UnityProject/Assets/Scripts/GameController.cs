@@ -27,7 +27,13 @@ public class GameController : MonoBehaviour {
     private Transform m_debugHitPoint;
 
     [SerializeField]
+    private AudioSource m_gunAudioSource;
+
+    [SerializeField]
     private GameObject m_particleParent;
+
+    [SerializeField]
+    private GameObject m_decalsParent;
 
     private Vector3 lastHitPos = Vector3.zero;
 
@@ -64,21 +70,18 @@ public class GameController : MonoBehaviour {
                     int weaponIndex = 0;
                     var weaponStruct = m_weaponDataCopy[weaponIndex];
 
-
-
                     // Spawn Particle Effects
-                    // uses material index to go into array
-                    var newParticle = Instantiate(weaponStruct.m_prefabHitParticles[mat.m_index]) as GameObject;
+                    // note: uses material index to go into array
+                    var newParticle = Instantiate(weaponStruct.m_hitParticlePrefabs[mat.m_index]) as GameObject;
                     newParticle.transform.SetParent(m_particleParent.transform, false);
 
-                    // todo: orientate to normal
+                    // Orientate to normal
                     var wdsNrm = hit.transform.TransformVector(hit.normal);
                     newParticle.transform.SetPositionAndRotation(hit.point, Quaternion.LookRotation(wdsNrm, Vector3.up));
 
-                    // todo: Play Sounds
-
-
-
+                    // Play Sounds
+                    m_gunAudioSource.clip = weaponStruct.m_weaponFireSFX;
+                    m_gunAudioSource.Play();
                 }
                 else
                 {

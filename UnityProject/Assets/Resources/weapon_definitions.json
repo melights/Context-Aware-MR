@@ -2,7 +2,7 @@
 	"WEAPON_DEFINITIONS" : [
 	{
 		"NAME" : "MachineGun",
-		"SOUND_PATH_ACTIVATE_WEAPON" : "",
+		"SOUND_PATH_ACTIVATE_WEAPON" : "Prefabs/Sounds/shotgun",
 		"PARTICLE_PATH_HIT_BRICK" : "Prefabs/Particles/HitReaction/ParticleHitDefault",
 		"PARTICLE_PATH_HIT_CARPET" : "Prefabs/Particles/HitReaction/ParticleHitDefault",
 		"PARTICLE_PATH_HIT_CERAMIC" : "Prefabs/Particles/HitReaction/ParticleHitDefault",
