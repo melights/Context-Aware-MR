@@ -58,16 +58,24 @@ public class DataManager : MonoBehaviour
             // note: the particle paths must have all material types defined in same order as 
             // material definitions
             List<string> particlePathHit = new List<string>();
+            List<string> decalPathHit = new List<string>();
 
             for (int m = 0; m < m_materialData.Length; m++)
             {
                 string matName = m_materialData[m].m_name.ToUpper();
+
+                // Add Particle path
                 string particleName = "PARTICLE_PATH_HIT_" + matName;
-                string path = thisWeapon[particleName];
-                particlePathHit.Add(path);
+                string particlePath = thisWeapon[particleName];
+                particlePathHit.Add(particlePath);
+
+                // Add Decal Path
+                string decalName = "DECAL_PATH_HIT_" + matName;
+                string decalPath = thisWeapon[decalName];
+                decalPathHit.Add(decalPath);
             }
 
-            m_weaponData[i] = new WeaponStruct(name, soundPathActivateWeapon, particlePathHit);
+            m_weaponData[i] = new WeaponStruct(name, soundPathActivateWeapon, particlePathHit, decalPathHit);
         }
     }
 

@@ -35,6 +35,9 @@ public class GameController : MonoBehaviour {
     [SerializeField]
     private GameObject m_decalsParent;
 
+   [SerializeField]
+    private GameObject m_materialMeshRenderer;
+
     private Vector3 lastHitPos = Vector3.zero;
 
     private WeaponStruct[] m_weaponDataCopy;
@@ -71,17 +74,32 @@ public class GameController : MonoBehaviour {
                     var weaponStruct = m_weaponDataCopy[weaponIndex];
 
                     // Spawn Particle Effects
-                    // note: uses material index to go into array
-                    var newParticle = Instantiate(weaponStruct.m_hitParticlePrefabs[mat.m_index]) as GameObject;
-                    newParticle.transform.SetParent(m_particleParent.transform, false);
+                    {
+                        // note: uses material index to go into array
+                        var newParticle = Instantiate(weaponStruct.m_hitParticlePrefabs[mat.m_index]) as GameObject;
+                        newParticle.transform.SetParent(m_particleParent.transform, false);
 
-                    // Orientate to normal
-                    var wdsNrm = hit.transform.TransformVector(hit.normal);
-                    newParticle.transform.SetPositionAndRotation(hit.point, Quaternion.LookRotation(wdsNrm, Vector3.up));
+                        // Orientate to normal
+                        var wdsNrm = hit.transform.TransformVector(hit.normal);
+                        newParticle.transform.SetPositionAndRotation(hit.point, Quaternion.LookRotation(wdsNrm, Vector3.up));
+                    }
+
+                    // Spawn Decal Effects
+                    {
+                        // note: uses material index to go into array
+                        var newDecal = Instantiate(weaponStruct.m_hitDecalPrefabs[mat.m_index]) as GameObject;
+                        newDecal.transform.SetParent(m_decalsParent.transform, false);
+
+                        // Orientate to normal
+                        var wdsNrm = hit.transform.TransformVector(hit.normal);
+                        newDecal.transform.SetPositionAndRotation(hit.point, Quaternion.LookRotation(wdsNrm, Vector3.up));
+                    }
 
                     // Play Sounds
-                    m_gunAudioSource.clip = weaponStruct.m_weaponFireSFX;
-                    m_gunAudioSource.Play();
+                    {
+                        m_gunAudioSource.clip = weaponStruct.m_weaponFireSFX;
+                        m_gunAudioSource.Play();
+                    }
                 }
                 else
                 {
@@ -103,5 +121,10 @@ public class GameController : MonoBehaviour {
         // Debug.DrawRay(r.origin, r.direction, Color.green, 100);
 
         m_debugHitPoint.position = lastHitPos;
+    }
+
+    public void ToggleMeshRenderer()
+    {
+        m_materialMeshRenderer.SetActive(!m_materialMeshRenderer.activeSelf);
     }
 }

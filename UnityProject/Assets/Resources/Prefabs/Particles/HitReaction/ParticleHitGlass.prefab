@@ -72,7 +72,7 @@ GameObject:
   - component: {fileID: 4155263171204822}
   - component: {fileID: 114180354244005004}
   m_Layer: 0
-  m_Name: ParticleHitDefault
+  m_Name: ParticleHitGlass
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -334,7 +334,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 1540297934
+  randomSeed: 1597723117
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -424,7 +424,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 1, b: 1, a: 1}
+      maxColor: {r: 0, g: 0.5019608, b: 0.5019608, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}

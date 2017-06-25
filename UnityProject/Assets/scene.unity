@@ -624,6 +624,10 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &736004296 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 100006, guid: 9abd6b0f07dd48e42b6203c68fb1d803, type: 3}
+  m_PrefabInternal: {fileID: 1891206552}
 --- !u!1 &790441706
 GameObject:
   m_ObjectHideFlags: 0
@@ -724,7 +728,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_dataManager: {fileID: 874633725}
-  m_materialMeshRenderer: {fileID: 204948615}
 --- !u!114 &874633728
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -746,6 +749,7 @@ MonoBehaviour:
   m_gunAudioSource: {fileID: 1316961503}
   m_particleParent: {fileID: 790441706}
   m_decalsParent: {fileID: 949833867}
+  m_materialMeshRenderer: {fileID: 736004296}
 --- !u!4 &936761078 stripped
 Transform:
   m_PrefabParentObject: {fileID: 400006, guid: 9abd6b0f07dd48e42b6203c68fb1d803, type: 3}
@@ -1052,7 +1056,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 874633727}
+      - m_Target: {fileID: 874633728}
         m_MethodName: ToggleMeshRenderer
         m_Mode: 1
         m_Arguments:

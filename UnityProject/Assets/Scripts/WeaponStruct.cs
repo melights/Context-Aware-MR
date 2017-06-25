@@ -8,16 +8,19 @@ public struct WeaponStruct {
 
     public string m_name;
     public List<GameObject> m_hitParticlePrefabs;
+    public List<GameObject> m_hitDecalPrefabs;
     public AudioClip m_weaponFireSFX;
 
     public WeaponStruct(
         string name,
         string soundPath,
-        List<string> particleHitPaths
+        List<string> particleHitPaths,
+        List<string> decalHitPaths
         )
     {
         m_name = name;
         m_hitParticlePrefabs = new List<GameObject>();
+        m_hitDecalPrefabs = new List<GameObject>();
 
         // Load all the prefabs up!
         // todo: this isn't the most efficient way of doing this
@@ -27,6 +30,12 @@ public struct WeaponStruct {
         {
             var prefabGo = Resources.Load(particleHitPaths[i]) as GameObject;
             m_hitParticlePrefabs.Add(prefabGo);
+        }
+
+        for (int i = 0; i < decalHitPaths.Count; i++)
+        {
+            var prefabGo = Resources.Load(decalHitPaths[i]) as GameObject;
+            m_hitDecalPrefabs.Add(prefabGo);
         }
 
         // Load SFX

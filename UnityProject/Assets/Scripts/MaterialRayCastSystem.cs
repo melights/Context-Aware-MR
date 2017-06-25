@@ -8,9 +8,6 @@ public class MaterialRayCastSystem : MonoBehaviour {
     [SerializeField]
     private DataManager m_dataManager;
 
-    [SerializeField]
-    private GameObject m_materialMeshRenderer;
-
     private MaterialStruct[] m_materialDataCopy;
 
     // Use this for initialization
@@ -64,10 +61,5 @@ public class MaterialRayCastSystem : MonoBehaviour {
 
             return false;
         }
-    }
-
-    public void ToggleMeshRenderer()
-    {
-        m_materialMeshRenderer.SetActive(!m_materialMeshRenderer.activeSelf);
     }
 }
