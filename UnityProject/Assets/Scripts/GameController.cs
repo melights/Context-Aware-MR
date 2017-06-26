@@ -38,6 +38,9 @@ public class GameController : MonoBehaviour {
    [SerializeField]
     private GameObject m_materialMeshRenderer;
 
+    [SerializeField]
+    private ShotgunFire m_fireWeapon;
+
     private Vector3 lastHitPos = Vector3.zero;
 
     private WeaponStruct[] m_weaponDataCopy;
@@ -53,6 +56,7 @@ public class GameController : MonoBehaviour {
         // Fire Ray
         if (Input.GetMouseButtonDown(0))
         {
+            m_fireWeapon.FireWeapon();
             Ray r = m_renderCam.ScreenPointToRay(Input.mousePosition);
             APARaycastHit hit;
             MaterialStruct mat;
