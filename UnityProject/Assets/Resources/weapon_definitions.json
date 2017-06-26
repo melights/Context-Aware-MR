@@ -25,14 +25,14 @@
 		"PARTICLE_PATH_HIT_TILE" : "Prefabs/Particles/HitReaction/ParticleHitDefault",
 		"PARTICLE_PATH_HIT_WALLPAPER" : "Prefabs/Particles/HitReaction/ParticleHitDefault",
 		"PARTICLE_PATH_HIT_WATER" : "Prefabs/Particles/HitReaction/ParticleHitDefault",
-		"PARTICLE_PATH_HIT_WOOD" : "Prefabs/Particles/HitReaction/ParticleHitDefault",		
+		"PARTICLE_PATH_HIT_WOOD" : "Prefabs/Particles/HitReaction/ParticleHitWood",		
 		"DECAL_PATH_HIT_BRICK" : "Prefabs/Decals/DecalHitDefault",
 		"DECAL_PATH_HIT_CARPET" : "Prefabs/Decals/DecalHitDefault",
 		"DECAL_PATH_HIT_CERAMIC" : "Prefabs/Decals/DecalHitDefault",
-		"DECAL_PATH_HIT_FABRIC" : "Prefabs/Decals/DecalHitDefault",
+		"DECAL_PATH_HIT_FABRIC" : "Prefabs/Decals/DecalHitFabric",
 		"DECAL_PATH_HIT_FOLIAGE" : "Prefabs/Decals/DecalHitDefault",
 		"DECAL_PATH_HIT_FOOD" : "Prefabs/Decals/DecalHitDefault",
-		"DECAL_PATH_HIT_GLASS" : "Prefabs/Decals/DecalHitDefault",
+		"DECAL_PATH_HIT_GLASS" : "Prefabs/Decals/DecalHitGlass",
 		"DECAL_PATH_HIT_HAIR" : "Prefabs/Decals/DecalHitDefault",
 		"DECAL_PATH_HIT_LEATHER" : "Prefabs/Decals/DecalHitDefault",
 		"DECAL_PATH_HIT_METAL" : "Prefabs/Decals/DecalHitDefault",
@@ -48,7 +48,7 @@
 		"DECAL_PATH_HIT_TILE" : "Prefabs/Decals/DecalHitDefault",
 		"DECAL_PATH_HIT_WALLPAPER" : "Prefabs/Decals/DecalHitDefault",
 		"DECAL_PATH_HIT_WATER" : "Prefabs/Decals/DecalHitDefault",
-		"DECAL_PATH_HIT_WOOD" : "Prefabs/Decals/DecalHitDefault"
+		"DECAL_PATH_HIT_WOOD" : "Prefabs/Decals/DecalHitWood"
 	}	
 	]
 }

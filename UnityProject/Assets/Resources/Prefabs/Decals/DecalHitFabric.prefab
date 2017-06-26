@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4315867053130140}
   m_Layer: 0
-  m_Name: DecalHitDefault
+  m_Name: DecalHitFabric
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -178,7 +178,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: f9c30336c7b11414dac82c868914f1ee, type: 2}
+  - {fileID: 2100000, guid: 0983c27b7d4eb834586f5d758504630d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
