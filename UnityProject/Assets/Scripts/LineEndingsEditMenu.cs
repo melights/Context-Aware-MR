@@ -27,6 +27,8 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 //-----------------------------------------------------------------------
+
+#if UNITY_EDITOR
 namespace TiaanDotCom.Unity3D.EditorTools
 {
     using System.Collections.Generic;
@@ -157,3 +159,4 @@ namespace TiaanDotCom.Unity3D.EditorTools
         }
     }
 }
+#endif
