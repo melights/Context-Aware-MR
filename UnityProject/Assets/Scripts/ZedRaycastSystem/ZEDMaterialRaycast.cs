@@ -61,9 +61,6 @@ public class ZEDMaterialRaycast : MonoBehaviour {
                 pixelUv.x = m_mosuePos.x / Screen.width;
                 pixelUv.y = m_mosuePos.y / Screen.height;
 
-                //var pixelData = zedReadable.GetPixelBilinear(pixelUv.x, pixelUv.y);
-
-
                 pixelUv.y = 1.0f - pixelUv.y;
 
                 pixelUv.x *= zedReadable.width;
@@ -86,18 +83,75 @@ public class ZEDMaterialRaycast : MonoBehaviour {
                     {
                     return;
                 }
-       
 
-                Vector3 viewspacePos = new Vector3(pixelData.r, pixelData.g, -pixelData.b);
+
+                // If changed process of getting this position, then remember to udpate for loop at bottom
+                Vector3 cVsPos = new Vector3(pixelData.r, pixelData.g, -pixelData.b);
 
                 // get back into object space
                 Matrix4x4 inverseView = m_zedCamera.worldToCameraMatrix.inverse;
 
-                Vector3 worldPos = inverseView * new Vector4(viewspacePos.x, viewspacePos.y, viewspacePos.z, 1.0f);
+                Vector3 cWsPos = inverseView * new Vector4(cVsPos.x, cVsPos.y, cVsPos.z, 1.0f);
 
-               // Vector3 worldPos = m_zedCamera.transform.TransformPoint(objectPos);
+                // Now we need to find the normal....
+                {
+                    // https://stackoverflow.com/questions/37627254/how-to-reconstruct-normal-from-depth-without-artifacts-on-edge
+                    //     [ ]
+                    // [ ] [x] [ ]
+                    //     [ ]
 
-                m_hitPointSphere.position = worldPos;
+                    // 4 samples around edge
+                    // find the closest sample top and bottom, left and right relative to center sample
+                    // then normalise cross product on it? (x dir, y dir)
+
+                    Vector2[] offsets = new Vector2[4]
+                    {
+                        new Vector2( 0, 1),
+                        new Vector2( 0,-1),
+                        new Vector2( 1, 0),
+                        new Vector2(-1, 0)
+                    };
+
+                    Vector3[] wsPositions = new Vector3[4];
+                    float[] distToCenter = new float[4];
+
+                    for (int i = 0; i < 4; i++)
+                    {
+                        Vector2 uvOffset = pixelUv + offsets[i];
+                        Color sample = zedReadable.GetPixel((int)uvOffset.x, (int)uvOffset.y);
+                        Vector4 vsPos = new Vector4(sample.r, sample.g, -sample.b, 1.0f);
+
+                        // Calculate WS POS
+                        Vector3 sampleWsPos = inverseView * vsPos;
+
+                        distToCenter[i] = Vector3.Distance(cWsPos, sampleWsPos);
+
+                        wsPositions[i] = sampleWsPos;
+                    }
+
+                    int verticalSampleIndex = 0;
+                    int horizontalSampleIndex = 2;
+
+                    // Find closest vertical sample
+                    if (distToCenter[0] > distToCenter[1])
+                    {
+                        verticalSampleIndex = 1;
+                    }
+
+                    // Find closest horizontal sample
+                    if (distToCenter[2] > distToCenter[3])
+                    {
+                        horizontalSampleIndex = 3;
+                    }
+
+                    Vector3 normalGen = Vector3.Cross(wsPositions[verticalSampleIndex] - cWsPos, wsPositions[horizontalSampleIndex] - cWsPos);
+                    normalGen.Normalize();
+
+                    // Update Hit Point Sphere
+                    m_hitPointSphere.position = cWsPos;
+                }
+
+
 
                 Debug.Log(pixelUv);
                 Debug.Log(pixelData);
