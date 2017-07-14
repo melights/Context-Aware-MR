@@ -793,18 +793,6 @@ Camera:
   m_PrefabParentObject: {fileID: 20645671019389840, guid: 76db3eb81fd21ae45bab5204e324ae42,
     type: 2}
   m_PrefabInternal: {fileID: 618921805}
---- !u!114 &491704787
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 491704783}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 441d3e334966d9c43907b7d246e7b8ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  material: {fileID: 2100000, guid: 5ab414c7b822ac148a45f4d3c780227f, type: 2}
 --- !u!1 &536906332
 GameObject:
   m_ObjectHideFlags: 0
