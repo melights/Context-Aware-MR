@@ -3,10 +3,52 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum ECameraSystem
+{
+    MeshBased,
+    ZED
+}
+
 public class GameController : MonoBehaviour {
 
     [SerializeField]
+    private ECameraSystem m_cameraSystemEnum;
+
+    [SerializeField]
+    private GameObject m_meshSystemGO;
+
+    [SerializeField]
+    private GameObject m_zedSystemGO;
+
+    [SerializeField]
     private MaterialRayCastSystem m_materialRayCastSystem;
+
+    [SerializeField]
+    private ZEDMaterialRaycast m_zedRayCastSystem;
+
+    [SerializeField]
+    private GameObject m_meshParticleParent;
+
+    [SerializeField]
+    private GameObject m_meshDecalsParent;
+
+    [SerializeField]
+    private GameObject m_zedParticleParent;
+
+    [SerializeField]
+    private GameObject m_zedDecalsParent;
+
+    [SerializeField]
+    private AudioSource m_gunAudioSource;
+
+    [SerializeField]
+    private AudioSource m_zedGunAudioSource;
+
+    [SerializeField]
+    private ShotgunFire m_fireWeapon;
+
+    [SerializeField]
+    private ShotgunFire m_zedFireWeapon;
 
     [SerializeField]
     private DataManager m_dataManager;
@@ -26,28 +68,51 @@ public class GameController : MonoBehaviour {
     [SerializeField]
     private Transform m_debugHitPoint;
 
-    [SerializeField]
-    private AudioSource m_gunAudioSource;
+
 
     [SerializeField]
-    private GameObject m_particleParent;
-
-    [SerializeField]
-    private GameObject m_decalsParent;
-
-   [SerializeField]
     private GameObject m_materialMeshRenderer;
 
-    [SerializeField]
-    private ShotgunFire m_fireWeapon;
+
+
+
+
 
     private Vector3 lastHitPos = Vector3.zero;
-
     private WeaponStruct[] m_weaponDataCopy;
+
+    private Transform particleParent;
+    private Transform decalParent;
+    private AudioSource gunAudioSource;
+    private ShotgunFire shotgunFire;
 
     // Use this for initialization
     void Start () {
         m_weaponDataCopy = m_dataManager.GetWeaponDataArray();
+
+        m_meshSystemGO.SetActive(false);
+        m_zedSystemGO.SetActive(false);
+        particleParent = null;
+        decalParent = null;
+        gunAudioSource = null;
+        shotgunFire = null;
+
+        if (m_cameraSystemEnum == ECameraSystem.MeshBased)
+        {
+            m_meshSystemGO.SetActive(true);
+            particleParent = m_meshParticleParent.transform;
+            decalParent = m_meshDecalsParent.transform;
+            gunAudioSource = m_gunAudioSource;
+            shotgunFire = m_fireWeapon;
+        }
+        else if (m_cameraSystemEnum == ECameraSystem.ZED)
+        {
+            m_zedSystemGO.SetActive(true);
+            particleParent = m_zedParticleParent.transform;
+            decalParent = m_zedDecalsParent.transform;
+            gunAudioSource = m_zedGunAudioSource;
+            shotgunFire = m_zedFireWeapon;
+        }
     }
 	
 	// Update is called once per frame
@@ -56,79 +121,104 @@ public class GameController : MonoBehaviour {
         // Fire Ray
         if (Input.GetMouseButtonDown(0))
         {
-            m_fireWeapon.FireWeapon();
-            Ray r = m_renderCam.ScreenPointToRay(Input.mousePosition);
-            APARaycastHit hit;
-            MaterialStruct mat;
+            shotgunFire.FireWeapon();
 
-            if (m_materialRayCastSystem.RayVsSceneMaterial(r, out hit, out mat))
+            if (m_cameraSystemEnum == ECameraSystem.MeshBased)
             {
-                Color finalMaterialColour;
-                string finalMaterialName = "";
-                lastHitPos = hit.point;
-
-                if (mat != null)
-                {
-                    // We know the material...so...
-                    finalMaterialName = mat.m_name;
-                    finalMaterialColour = mat.m_colour;
-
-                    // Grab Weapon Struct
-                    int weaponIndex = 0;
-                    var weaponStruct = m_weaponDataCopy[weaponIndex];
-
-                    // Spawn Particle Effects
-                    {
-                        // note: uses material index to go into array
-                        var newParticle = Instantiate(weaponStruct.m_hitParticlePrefabs[mat.m_index]) as GameObject;
-                        newParticle.transform.SetParent(m_particleParent.transform, false);
-
-                        // Orientate to normal
-                        var wdsNrm = hit.transform.TransformVector(hit.normal);
-                        newParticle.transform.SetPositionAndRotation(hit.point, Quaternion.LookRotation(wdsNrm, Vector3.up));
-                    }
-
-                    // Spawn Decal Effects
-                    {
-                        // note: uses material index to go into array
-                        var newDecal = Instantiate(weaponStruct.m_hitDecalPrefabs[mat.m_index]) as GameObject;
-                        newDecal.transform.SetParent(m_decalsParent.transform, false);
-
-                        // Orientate to normal
-                        var wdsNrm = hit.transform.TransformVector(hit.normal);
-                        newDecal.transform.SetPositionAndRotation(hit.point, Quaternion.LookRotation(wdsNrm, Vector3.up));
-                    }
-
-                    // Play Sounds
-                    {
-                        m_gunAudioSource.clip = weaponStruct.m_weaponFireSFX;
-                        m_gunAudioSource.Play();
-                    }
-                }
-                else
-                {
-                    Debug.LogError("Couldn't Find material!");
-                    finalMaterialName = "Error";
-                    finalMaterialColour = m_errorCol;
-                }
-
-                m_uiMaterialColourOutput.color = finalMaterialColour;
-                m_uiMaterialTextOutput.text = finalMaterialName;
+                MeshBasedInteraction();
             }
-            else
+            else if (m_cameraSystemEnum == ECameraSystem.ZED)
             {
-                m_uiMaterialColourOutput.color = m_errorCol;
-                m_uiMaterialTextOutput.text = "No Data / Ray Missed ";
+                ZEDBasedInteraction();
             }
         }
-
-        // Debug.DrawRay(r.origin, r.direction, Color.green, 100);
-
         m_debugHitPoint.position = lastHitPos;
     }
 
     public void ToggleMeshRenderer()
     {
         m_materialMeshRenderer.SetActive(!m_materialMeshRenderer.activeSelf);
+    }
+
+    private void MeshBasedInteraction()
+    {
+        Ray r = m_renderCam.ScreenPointToRay(Input.mousePosition);
+        APARaycastHit hit;
+        MaterialStruct mat;
+
+        if (m_materialRayCastSystem.RayVsSceneMaterial(r, out hit, out mat))
+        {
+            Vector3 hitWsPosition = hit.point;
+            Vector3 hitWsNormal = hit.transform.TransformVector(hit.normal);
+
+            GameReaction(hitWsPosition, hitWsNormal, mat);
+        }
+        else
+        {
+            m_uiMaterialColourOutput.color = m_errorCol;
+            m_uiMaterialTextOutput.text = "No Data / Ray Missed ";
+        }
+    }
+
+    private void ZEDBasedInteraction()
+    {
+        m_zedRayCastSystem.MouseButtonTriggered();
+    }
+
+    public void GameReaction(Vector3 hitWsPosition, Vector3 hitWsNormal, MaterialStruct mat)
+    {
+        Color finalMaterialColour;
+        string finalMaterialName = "";
+
+        if (mat != null)
+        {
+            // We know the material...so...
+            finalMaterialName = mat.m_name;
+            finalMaterialColour = mat.m_colour;
+        }
+        else
+        {
+            finalMaterialName = "Error";
+            finalMaterialColour = m_errorCol;
+        }
+
+        m_uiMaterialColourOutput.color = finalMaterialColour;
+        m_uiMaterialTextOutput.text = finalMaterialName;
+
+        int matIndex = mat == null ? 0 : mat.m_index;
+
+        lastHitPos = hitWsPosition;
+
+        // Grab Weapon Struct
+        int weaponIndex = 0;
+        var weaponStruct = m_weaponDataCopy[weaponIndex];
+
+        // Spawn Particle Effects
+        {
+            // note: uses material index to go into array
+            var newParticle = Instantiate(weaponStruct.m_hitParticlePrefabs[matIndex]) as GameObject;
+            newParticle.transform.SetParent(particleParent, false);
+
+            // Orientate to normal 
+            newParticle.transform.SetPositionAndRotation(hitWsPosition, Quaternion.LookRotation(hitWsNormal, Vector3.up));
+        }
+
+        // Spawn Decal Effects
+        {
+            // note: uses material index to go into array
+            var newDecal = Instantiate(weaponStruct.m_hitDecalPrefabs[matIndex]) as GameObject;
+            newDecal.transform.SetParent(decalParent, false);
+
+            // Orientate to normal
+            newDecal.transform.SetPositionAndRotation(hitWsPosition, Quaternion.LookRotation(hitWsNormal, Vector3.up));
+        }
+
+        // Play Sounds
+        {
+            gunAudioSource.clip = weaponStruct.m_weaponFireSFX;
+            gunAudioSource.Play();
+        }
+
+
     }
 }

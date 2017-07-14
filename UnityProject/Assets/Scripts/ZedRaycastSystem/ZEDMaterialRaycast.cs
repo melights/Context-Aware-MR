@@ -7,6 +7,9 @@ using UnityEngine;
 public class ZEDMaterialRaycast : MonoBehaviour {
 
     [SerializeField]
+    private GameController m_gameController;
+
+    [SerializeField]
     private TextureOverlay m_textureOverlay;
 
     [SerializeField]
@@ -23,16 +26,13 @@ public class ZEDMaterialRaycast : MonoBehaviour {
 		
 	}
 
-    private void Update()
+    public void MouseButtonTriggered()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            m_raycastTroggerd = true;
-            m_mosuePos = Input.mousePosition;
-        }
+        m_raycastTroggerd = true;
+        m_mosuePos = Input.mousePosition;
     }
 
-    // Update is called once per frame
+    // Has to be OnPostRender so we can grab render targets
     private void OnPostRender()
     {
         if (m_raycastTroggerd)
@@ -148,10 +148,11 @@ public class ZEDMaterialRaycast : MonoBehaviour {
                     normalGen.Normalize();
 
                     // Update Hit Point Sphere
-                    m_hitPointSphere.position = cWsPos;
+                    // m_hitPointSphere.position = cWsPos;
+                    m_gameController.GameReaction(cWsPos, normalGen, null);
+
+
                 }
-
-
 
                 Debug.Log(pixelUv);
                 Debug.Log(pixelData);
