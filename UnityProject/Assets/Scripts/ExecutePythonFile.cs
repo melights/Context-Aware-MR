@@ -12,18 +12,22 @@ public class ExecutePythonFile : MonoBehaviour {
     private string m_directory;
 
     private List<string> m_arguments;
+    private List<System.EventHandler> m_eventHandlers;
+
 
     public void Setup(
         string pythonExePath,
         string pythonFilePath,
         string pythonWorkingDir,
-        List<string> args
+        List<string> args,
+         List<System.EventHandler> handlers
         )
     {
         m_pythonExePath = pythonExePath;
         m_filePath = pythonFilePath;
         m_directory = pythonWorkingDir;
         m_arguments = args;
+        m_eventHandlers = handlers;
     }
 
     public void Start()
@@ -38,14 +42,14 @@ public class ExecutePythonFile : MonoBehaviour {
 
     private IEnumerator Execute()
     {
-        Run(m_filePath, m_directory, m_pythonExePath, m_arguments);
+        Run(ref m_filePath,ref m_directory,ref m_pythonExePath, ref m_arguments, ref m_eventHandlers);
         yield return null;
     }
 
     // from:
     // http://onedayitwillmake.com/blog/2014/10/running-a-pythonshell-script-from-the-unityeditor/
 
-    private void Run(string filepath, string wrkingDir, string pythonExePath, List<string> args)
+    private void Run(ref string filepath,ref string wrkingDir,ref string pythonExePath, ref List<string> args, ref List<System.EventHandler> handlers)
     {
         Process p = new Process();
 
@@ -68,7 +72,14 @@ public class ExecutePythonFile : MonoBehaviour {
         };
 
         p.EnableRaisingEvents = true;
+
+        // Add callbacks
         p.Exited += new System.EventHandler(ProcessExitCallback);
+        for (int i = 0; i < handlers.Count; i++)
+        {
+            p.Exited += handlers[i];
+        }
+
         p.Start();
     }
 

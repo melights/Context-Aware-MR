@@ -52,8 +52,12 @@ public class ZEDMaterialRaycast : MonoBehaviour {
         args.Add(m_colImageOutputPath);
         args.Add(m_matImageOutputPath);
 
+        // Build handler list
+        List<System.EventHandler> handlers = new List<System.EventHandler>();
+        handlers.Add(new System.EventHandler(MLFinishedCallback));
+
         // Setup ML Python
-        m_linkedPythonFile.Setup(m_pythonExePath, m_pythonFilePath, m_pythonWorkingDir, args);
+        m_linkedPythonFile.Setup(m_pythonExePath, m_pythonFilePath, m_pythonWorkingDir, args, handlers);
 
         // Export Materials
         m_exportFlipMaterial = new Material(Shader.Find("Hidden/ExportFlip"));
@@ -73,8 +77,15 @@ public class ZEDMaterialRaycast : MonoBehaviour {
         m_mousePositionWhenTriggered = Input.mousePosition;
     }
 
+    private void MLFinishedCallback(object sender, System.EventArgs e)
+    {
+        Debug.Log("ML FINISHED YAY!");
+    }
+
     public void TriggerML()
     {
+        Debug.Log("Starting ML");
+
         // Output Colour Buffer
         WriteColourBufferToFile();
 
