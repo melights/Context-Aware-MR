@@ -7,6 +7,8 @@ using UnityEngine;
 
 public class ZEDMaterialRaycast : MonoBehaviour {
 
+    private ExecutePythonFile m_linkedPythonFile;
+
     [SerializeField]
     private GameController m_gameController;
 
@@ -29,14 +31,38 @@ public class ZEDMaterialRaycast : MonoBehaviour {
     private int m_lastWidth;
     private int m_lastHeight;
 
+    private float m_mlPercentage = 0.2f;
+
+    private const string m_pythonExePath = @"C:\Python27\python.exe";
+    private const string m_pythonFilePath = @"C:\Users\SOPOT\Downloads\ml\infer.py";
+    private const string m_pythonWorkingDir = @"C:\Users\SOPOT\Downloads\ml\";
+
+    // Additional Args
+    private const string m_colImageOutputPath = @"C:\users\SOPOT\Desktop\test.jpg";
+    private const string m_matImageOutputPath = @"C:\users\SOPOT\Desktop\matc.png";
+
     // Use this for initialization
     void Start () {
 
+        // Must be added to game component, otherwise it will not be setup properly and coroutines won't work
+        m_linkedPythonFile = gameObject.AddComponent<ExecutePythonFile>();
+
+        // Build arg list
+        List<string> args = new List<string>();
+        args.Add(m_colImageOutputPath);
+        args.Add(m_matImageOutputPath);
+
+        // Setup ML Python
+        m_linkedPythonFile.Setup(m_pythonExePath, m_pythonFilePath, m_pythonWorkingDir, args);
+
+        // Export Materials
         m_exportFlipMaterial = new Material(Shader.Find("Hidden/ExportFlip"));
 
+        // Store width etc to test for resize
         m_lastWidth = Screen.width;
         m_lastHeight = Screen.height;
 
+        // Create new render texture
         var zDepth = m_textureOverlay.depthXYZZed;
         m_zedRT = new RenderTexture(zDepth.width, zDepth.height, 0, m_zedFormat);
     }
@@ -45,6 +71,43 @@ public class ZEDMaterialRaycast : MonoBehaviour {
     {
         m_rayCastTriggered = true;
         m_mousePositionWhenTriggered = Input.mousePosition;
+    }
+
+    public void TriggerML()
+    {
+        // Output Colour Buffer
+        WriteColourBufferToFile();
+
+        // Run ML
+        m_linkedPythonFile.RunPython();
+    }
+
+    private void WriteColourBufferToFile()
+    {
+        var zCol = m_textureOverlay.camZedLeft;
+
+        // Store current RT
+        RenderTexture currentRT = RenderTexture.active;
+        {
+            // Create New RT
+            int nW = (int)((float)(zCol.width) * m_mlPercentage);
+            int nH = (int)((float)(zCol.height) * m_mlPercentage);
+            RenderTexture colRt = new RenderTexture(nW, nH, 0, RenderTextureFormat.ARGB32);
+
+            // Material Sorts out the data
+            // Flips image and channels
+            Graphics.Blit(zCol, colRt, m_exportFlipMaterial);
+
+            Texture2D zedReadable = new Texture2D(colRt.width, colRt.height, zCol.format, false);
+            zedReadable.ReadPixels(new Rect(0, 0, colRt.width, colRt.height), 0, 0);
+            zedReadable.Apply();
+
+             var bytes = zedReadable.EncodeToJPG(100);
+
+             File.WriteAllBytes(m_colImageOutputPath, bytes);
+        }
+        // Restore Active RT
+        RenderTexture.active = currentRT;
     }
 
     private void OnResize()
@@ -59,31 +122,6 @@ public class ZEDMaterialRaycast : MonoBehaviour {
         }
     }
 
-    public void WriteColourBufferToFile()
-    {
-        var zCol = m_textureOverlay.camZedLeft;
-
-        // Store current RT
-        RenderTexture currentRT = RenderTexture.active;
-        {
-            // Create New RT
-            RenderTexture colRt = new RenderTexture(zCol.width, zCol.height, 0, RenderTextureFormat.ARGB32);
-
-            // Material Sorts out the data
-            // Flips image and channels
-            Graphics.Blit(zCol, colRt, m_exportFlipMaterial);
-
-            Texture2D zedReadable = new Texture2D(zCol.width, zCol.height, zCol.format, false);
-            zedReadable.ReadPixels(new Rect(0, 0, colRt.width, colRt.height), 0, 0);
-            zedReadable.Apply();
-
-             var bytes = zedReadable.EncodeToJPG(100);
-
-             File.WriteAllBytes("C:/users/SOPOT/Desktop/test.jpg", bytes);
-        }
-        // Restore Active RT
-        RenderTexture.active = currentRT;
-    }
 
     // Has to be OnPostRender so we can grab render targets
     private void OnPostRender()

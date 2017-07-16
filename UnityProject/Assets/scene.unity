@@ -238,10 +238,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e4cc9e008d39ff46b8f6a11def08c42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_pythonExePath: C:\Python27\python.exe
-  m_filePath: C:\Users\SOPOT\Downloads\ml\infer.py
-  m_directory: C:\Users\SOPOT\Downloads\ml\
-  m_arguments: []
 --- !u!1 &36763577
 GameObject:
   m_ObjectHideFlags: 0
@@ -1527,7 +1523,6 @@ GameObject:
   - component: {fileID: 874633726}
   - component: {fileID: 874633727}
   - component: {fileID: 874633728}
-  - component: {fileID: 874633729}
   m_Layer: 0
   m_Name: ManagerSystems
   m_TagString: Untagged
@@ -1619,21 +1614,6 @@ MonoBehaviour:
   m_uiMaterialColourOutput: {fileID: 36763579}
   m_debugHitPoint: {fileID: 8018596}
   m_materialMeshRenderer: {fileID: 736004296}
---- !u!114 &874633729
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 874633723}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e4cc9e008d39ff46b8f6a11def08c42, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_pythonExePath: C:\Python27\python.exe
-  m_filePath: C:\Users\SOPOT\Downloads\ml\infer.py
-  m_directory: C:\Users\SOPOT\Downloads\ml\
-  m_arguments: []
 --- !u!1 &885391728
 GameObject:
   m_ObjectHideFlags: 0
@@ -2419,7 +2399,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 491704784}
-        m_MethodName: WriteColourBufferToFile
+        m_MethodName: TriggerML
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

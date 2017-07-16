@@ -7,37 +7,57 @@ using System.Diagnostics;
 
 public class ExecutePythonFile : MonoBehaviour {
 
-    public string m_pythonExePath;
-    public string m_filePath;
-    public string m_directory;
+    private string m_pythonExePath;
+    private string m_filePath;
+    private string m_directory;
 
-    public List<string> m_arguments;
+    private List<string> m_arguments;
 
-    // Use this for initialization
-    void Start() {
-        // for now
-        StartPython();
+    public void Setup(
+        string pythonExePath,
+        string pythonFilePath,
+        string pythonWorkingDir,
+        List<string> args
+        )
+    {
+        m_pythonExePath = pythonExePath;
+        m_filePath = pythonFilePath;
+        m_directory = pythonWorkingDir;
+        m_arguments = args;
     }
 
-    public void StartPython()
+    public void Start()
+    {
+        ;
+    }
+
+    public void RunPython()
     {
         StartCoroutine("Execute");
     }
 
-    IEnumerator Execute()
+    private IEnumerator Execute()
     {
-        Run(m_filePath, m_directory, m_pythonExePath);
+        Run(m_filePath, m_directory, m_pythonExePath, m_arguments);
         yield return null;
     }
 
     // from:
     // http://onedayitwillmake.com/blog/2014/10/running-a-pythonshell-script-from-the-unityeditor/
 
-    private void Run(string filepath, string wrkingDir, string pythonExePath)
+    private void Run(string filepath, string wrkingDir, string pythonExePath, List<string> args)
     {
         Process p = new Process();
 
-        p.StartInfo = new ProcessStartInfo(pythonExePath, filepath)
+        string argsList = "";
+
+        foreach (string s in args)
+        {
+            argsList += " ";
+            argsList += s;
+        }
+
+        p.StartInfo = new ProcessStartInfo(pythonExePath, filepath + argsList)
         {
             WindowStyle = ProcessWindowStyle.Hidden,
             CreateNoWindow = true,
