@@ -34,8 +34,8 @@ public class ZEDMaterialRaycast : MonoBehaviour {
     private float m_mlPercentage = 0.2f;
 
     private const string m_pythonExePath = @"C:\Python27\python.exe";
-    private const string m_pythonFilePath = @"C:\Users\SOPOT\Downloads\ml\infer.py";
-    private const string m_pythonWorkingDir = @"C:\Users\SOPOT\Downloads\ml\";
+    private const string m_pythonFilePath = @"C:\Users\SOPOT\Desktop\BUWork\WenWork\UnityProject\ml\infer.py";
+    private const string m_pythonWorkingDir = @"C:\Users\SOPOT\Desktop\BUWork\WenWork\UnityProject\ml\";
 
     // Additional Args
     private const string m_colImageOutputPath = @"C:\users\SOPOT\Desktop\test.jpg";
