@@ -123,5 +123,15 @@ public class TextureOverlay : MonoBehaviour
         float height = Mathf.Tan(0.5f * fov) * 2.0f;
         screen.transform.localScale = new Vector3(height * aspect, height, 1);
     }
+
+    public void ResetColourTexture()
+    {
+        matRGB.SetTexture("_CameraTex", camZedLeft);
+    }
+
+    public void ForceColourTextureToMatTexture(Texture2D matColTex)
+    {
+        matRGB.SetTexture("_CameraTex", matColTex);
+    }
 }
 

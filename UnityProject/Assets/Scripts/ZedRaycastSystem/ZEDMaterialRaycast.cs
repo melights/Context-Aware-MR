@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
+
+
 // todo: force 16:9 resolution
 
 public class ZEDMaterialRaycast : MonoBehaviour {
@@ -41,6 +43,10 @@ public class ZEDMaterialRaycast : MonoBehaviour {
     private const string m_colImageOutputPath = @"C:\users\SOPOT\Desktop\test.jpg";
     private const string m_matImageOutputPath = @"C:\users\SOPOT\Desktop\matc.png";
 
+    bool m_showMaterialColours = false;
+    private Texture2D m_materialColourTexture;
+    private bool m_makeNewColourTexture = false;
+
     // Use this for initialization
     void Start () {
 
@@ -71,15 +77,72 @@ public class ZEDMaterialRaycast : MonoBehaviour {
         m_zedRT = new RenderTexture(zDepth.width, zDepth.height, 0, m_zedFormat);
     }
 
+    public void ToggleCameraTexture()
+    {
+        if (m_materialColourTexture == null)
+        {
+            Debug.Log("Material Colour Texture not ready, trigger a ML to make one");
+            return;
+        }
+
+        m_showMaterialColours = !m_showMaterialColours;
+
+        if (m_showMaterialColours)
+        {
+            m_textureOverlay.ForceColourTextureToMatTexture(m_materialColourTexture);
+        }
+        else
+        {
+            m_textureOverlay.ResetColourTexture();
+        }
+    }
+
     public void TriggerRayCast()
     {
         m_rayCastTriggered = true;
         m_mousePositionWhenTriggered = Input.mousePosition;
     }
 
+    public Texture2D LoadPNG(string filePath)
+    {
+        Texture2D tex = null;
+        byte[] fileData;
+
+        if (File.Exists(filePath))
+        {
+            fileData = File.ReadAllBytes(filePath);
+            tex = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+            tex.LoadImage(fileData); //..this will auto-resize the texture dimensions.
+            tex.Apply();
+        }
+        else
+        {
+            Debug.LogError("Could not find file!");
+        }
+        return tex;
+    }
+
     private void MLFinishedCallback(object sender, System.EventArgs e)
     {
         Debug.Log("ML FINISHED YAY!");
+
+        if (m_materialColourTexture != null)
+        {
+
+        }
+
+        // Can't make Texture2D here as this is called from another thread
+        m_makeNewColourTexture = true;
+    }
+
+    private void Update()
+    {
+        if (m_makeNewColourTexture)
+        {
+            m_materialColourTexture = LoadPNG(m_matImageOutputPath);
+            m_makeNewColourTexture = false;
+        }
+
     }
 
     public void TriggerML()

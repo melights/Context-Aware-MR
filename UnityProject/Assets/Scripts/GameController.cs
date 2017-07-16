@@ -131,6 +131,7 @@ public class GameController : MonoBehaviour {
     public void ToggleMeshRenderer()
     {
         m_materialMeshRenderer.SetActive(!m_materialMeshRenderer.activeSelf);
+        m_zedRayCastSystem.ToggleCameraTexture();
     }
 
     private void MeshBasedInteraction()
