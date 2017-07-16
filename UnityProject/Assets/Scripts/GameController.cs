@@ -68,15 +68,8 @@ public class GameController : MonoBehaviour {
     [SerializeField]
     private Transform m_debugHitPoint;
 
-
-
     [SerializeField]
     private GameObject m_materialMeshRenderer;
-
-
-
-
-
 
     private Vector3 lastHitPos = Vector3.zero;
     private WeaponStruct[] m_weaponDataCopy;
@@ -162,13 +155,15 @@ public class GameController : MonoBehaviour {
 
     private void ZEDBasedInteraction()
     {
-        m_zedRayCastSystem.MouseButtonTriggered();
+        m_zedRayCastSystem.TriggerRayCast();
     }
 
     public void GameReaction(Vector3 hitWsPosition, Vector3 hitWsNormal, MaterialStruct mat)
     {
         Color finalMaterialColour;
         string finalMaterialName = "";
+
+        hitWsPosition = hitWsPosition + (hitWsNormal * 0.01f);
 
         if (mat != null)
         {
@@ -218,7 +213,5 @@ public class GameController : MonoBehaviour {
             gunAudioSource.clip = weaponStruct.m_weaponFireSFX;
             gunAudioSource.Play();
         }
-
-
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 // todo: force 16:9 resolution
@@ -18,48 +19,102 @@ public class ZEDMaterialRaycast : MonoBehaviour {
     [SerializeField]
     private Transform m_hitPointSphere;
 
-    bool m_raycastTroggerd = false;
-    Vector2 m_mosuePos;
+    private Material m_exportFlipMaterial;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
+    private bool m_rayCastTriggered = false;
+    private Vector2 m_mousePositionWhenTriggered;
+    private RenderTexture m_zedRT;
+    private RenderTextureFormat m_zedFormat = RenderTextureFormat.ARGBFloat;
 
-    public void MouseButtonTriggered()
+    private int m_lastWidth;
+    private int m_lastHeight;
+
+    // Use this for initialization
+    void Start () {
+
+        m_exportFlipMaterial = new Material(Shader.Find("Hidden/ExportFlip"));
+
+        m_lastWidth = Screen.width;
+        m_lastHeight = Screen.height;
+
+        var zDepth = m_textureOverlay.depthXYZZed;
+        m_zedRT = new RenderTexture(zDepth.width, zDepth.height, 0, m_zedFormat);
+    }
+
+    public void TriggerRayCast()
     {
-        m_raycastTroggerd = true;
-        m_mosuePos = Input.mousePosition;
+        m_rayCastTriggered = true;
+        m_mousePositionWhenTriggered = Input.mousePosition;
+    }
+
+    private void OnResize()
+    {
+        if (m_zedRT != null)
+        {
+            m_lastWidth = Screen.width;
+            m_lastHeight = Screen.height;
+            m_zedRT.Release();
+            var zDepth = m_textureOverlay.depthXYZZed;
+            m_zedRT = new RenderTexture(zDepth.width, zDepth.height, 0, m_zedFormat);
+        }
+    }
+
+    public void WriteColourBufferToFile()
+    {
+        var zCol = m_textureOverlay.camZedLeft;
+
+        // Store current RT
+        RenderTexture currentRT = RenderTexture.active;
+        {
+            // Create New RT
+            RenderTexture colRt = new RenderTexture(zCol.width, zCol.height, 0, RenderTextureFormat.ARGB32);
+
+            // Material Sorts out the data
+            // Flips image and channels
+            Graphics.Blit(zCol, colRt, m_exportFlipMaterial);
+
+            Texture2D zedReadable = new Texture2D(zCol.width, zCol.height, zCol.format, false);
+            zedReadable.ReadPixels(new Rect(0, 0, colRt.width, colRt.height), 0, 0);
+            zedReadable.Apply();
+
+             var bytes = zedReadable.EncodeToJPG(100);
+
+             File.WriteAllBytes("C:/users/SOPOT/Desktop/test.jpg", bytes);
+        }
+        // Restore Active RT
+        RenderTexture.active = currentRT;
     }
 
     // Has to be OnPostRender so we can grab render targets
     private void OnPostRender()
     {
-        if (m_raycastTroggerd)
+        if (m_lastWidth != Screen.width || m_lastHeight != Screen.height)
         {
-            m_raycastTroggerd = false;
-            var zedTexture = m_textureOverlay.depthXYZZed;
-            RenderTextureFormat zedFormat = RenderTextureFormat.ARGBFloat;
+            OnResize();
+        }
+
+        if (m_rayCastTriggered)
+        {
+            m_rayCastTriggered = false;
+            var zDepth = m_textureOverlay.depthXYZZed;
 
             // Store current RT
             RenderTexture currentRT = RenderTexture.active;
 
             // Create new render target to copy
             {
-                RenderTexture tempRT = new RenderTexture(zedTexture.width, zedTexture.height, 0, zedFormat);
+                RenderTexture.active = m_zedRT;
 
-                RenderTexture.active = tempRT;
+                Graphics.Blit(zDepth, m_zedRT);
 
-                Graphics.Blit(zedTexture, tempRT);
-
-                Texture2D zedReadable = new Texture2D(zedTexture.width, zedTexture.height, zedTexture.format, false);
-                zedReadable.ReadPixels(new Rect(0, 0, tempRT.width, tempRT.height), 0, 0);
+                Texture2D zedReadable = new Texture2D(zDepth.width, zDepth.height, zDepth.format, false);
+                zedReadable.ReadPixels(new Rect(0, 0, m_zedRT.width, m_zedRT.height), 0, 0);
                 zedReadable.Apply();
 
                 Vector2 pixelUv;
 
-                pixelUv.x = m_mosuePos.x / Screen.width;
-                pixelUv.y = m_mosuePos.y / Screen.height;
+                pixelUv.x = m_mousePositionWhenTriggered.x / Screen.width;
+                pixelUv.y = m_mousePositionWhenTriggered.y / Screen.height;
 
                 pixelUv.y = 1.0f - pixelUv.y;
 
@@ -106,10 +161,10 @@ public class ZEDMaterialRaycast : MonoBehaviour {
 
                     Vector2[] offsets = new Vector2[4]
                     {
-                        new Vector2( 0, 1),
-                        new Vector2( 0,-1),
-                        new Vector2( 1, 0),
-                        new Vector2(-1, 0)
+                        new Vector2( 0, 15),
+                        new Vector2( 0,-15),
+                        new Vector2( 15, 0),
+                        new Vector2(-15, 0)
                     };
 
                     Vector3[] wsPositions = new Vector3[4];
@@ -147,10 +202,8 @@ public class ZEDMaterialRaycast : MonoBehaviour {
                     Vector3 normalGen = Vector3.Cross(wsPositions[verticalSampleIndex] - cWsPos, wsPositions[horizontalSampleIndex] - cWsPos);
                     normalGen.Normalize();
 
-                    // Update Hit Point Sphere
-                    // m_hitPointSphere.position = cWsPos;
+                    // Update Game Reaction
                     m_gameController.GameReaction(cWsPos, normalGen, null);
-
 
                 }
 
