@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 public enum ECameraSystem
 {
-    MeshBased,
-    ZED
+    MeshPreProcessSystem,
+    ZEDRealtimeSystem
 }
 
 public class GameController : MonoBehaviour {
@@ -15,49 +15,19 @@ public class GameController : MonoBehaviour {
     private ECameraSystem m_cameraSystemEnum;
 
     [SerializeField]
-    private GameObject m_meshSystemGO;
-
-    [SerializeField]
-    private GameObject m_zedSystemGO;
-
-    [SerializeField]
     private MaterialRayCastSystem m_materialRayCastSystem;
-
-    [SerializeField]
-    private ZEDMaterialRaycast m_zedRayCastSystem;
-
-    [SerializeField]
-    private GameObject m_meshParticleParent;
-
-    [SerializeField]
-    private GameObject m_meshDecalsParent;
-
-    [SerializeField]
-    private GameObject m_zedParticleParent;
-
-    [SerializeField]
-    private GameObject m_zedDecalsParent;
-
-    [SerializeField]
-    private AudioSource m_gunAudioSource;
-
-    [SerializeField]
-    private AudioSource m_zedGunAudioSource;
-
-    [SerializeField]
-    private ShotgunFire m_fireWeapon;
-
-    [SerializeField]
-    private ShotgunFire m_zedFireWeapon;
 
     [SerializeField]
     private DataManager m_dataManager;
 
     [SerializeField]
-    private Color m_errorCol;
+    private Color m_errorColour;
 
     [SerializeField]
-    private Camera m_renderCam;
+    private Camera m_meshRenderCamera;
+
+    [SerializeField]
+    private Transform m_debugHitPoint;
 
     [SerializeField]
     private Text m_uiMaterialTextOutput;
@@ -66,10 +36,49 @@ public class GameController : MonoBehaviour {
     private Image m_uiMaterialColourOutput;
 
     [SerializeField]
-    private Transform m_debugHitPoint;
+    private GameObject m_uiTriggerMl;
+
+
+    // MESH PRE PROCESS SYSTEMS
 
     [SerializeField]
-    private GameObject m_materialMeshRenderer;
+    private GameObject m_meshSystemGO;
+
+    [SerializeField]
+    private GameObject m_meshRenderer;
+
+    [SerializeField]
+    private GameObject m_meshParticleParent;
+
+    [SerializeField]
+    private GameObject m_meshDecalsParent;
+
+    [SerializeField]
+    private AudioSource m_meshGunAudioSource;
+
+    [SerializeField]
+    private ShotgunFire m_meshFireWeapon;
+
+    // ZED REALTIME SYSTEMS
+
+    [SerializeField]
+    private GameObject m_zedSystemGO;
+
+    [SerializeField]
+    private ZEDMaterialRaycast m_zedRayCastSystem;
+
+    [SerializeField]
+    private GameObject m_zedParticleParent;
+
+    [SerializeField]
+    private GameObject m_zedDecalsParent;
+
+    [SerializeField]
+    private AudioSource m_zedGunAudioSource;
+
+    [SerializeField]
+    private ShotgunFire m_zedFireWeapon;
+
 
     private Vector3 lastHitPos = Vector3.zero;
     private WeaponStruct[] m_weaponDataCopy;
@@ -90,15 +99,16 @@ public class GameController : MonoBehaviour {
         gunAudioSource = null;
         shotgunFire = null;
 
-        if (m_cameraSystemEnum == ECameraSystem.MeshBased)
+        if (m_cameraSystemEnum == ECameraSystem.MeshPreProcessSystem)
         {
             m_meshSystemGO.SetActive(true);
+            m_uiTriggerMl.SetActive(false);
             particleParent = m_meshParticleParent.transform;
             decalParent = m_meshDecalsParent.transform;
-            gunAudioSource = m_gunAudioSource;
-            shotgunFire = m_fireWeapon;
+            gunAudioSource = m_meshGunAudioSource;
+            shotgunFire = m_meshFireWeapon;
         }
-        else if (m_cameraSystemEnum == ECameraSystem.ZED)
+        else if (m_cameraSystemEnum == ECameraSystem.ZEDRealtimeSystem)
         {
             m_zedSystemGO.SetActive(true);
             particleParent = m_zedParticleParent.transform;
@@ -111,32 +121,33 @@ public class GameController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        // Fire Ray
-        if (Input.GetMouseButtonDown(0))
+        // Fire Ray but check if on UI too
+        if (Input.GetMouseButtonDown(0) && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
         {
             shotgunFire.FireWeapon();
 
-            if (m_cameraSystemEnum == ECameraSystem.MeshBased)
+            if (m_cameraSystemEnum == ECameraSystem.MeshPreProcessSystem)
             {
-                MeshBasedInteraction();
+                MeshPreProcessInteractionRoutine();
             }
-            else if (m_cameraSystemEnum == ECameraSystem.ZED)
+            else if (m_cameraSystemEnum == ECameraSystem.ZEDRealtimeSystem)
             {
-                ZEDBasedInteraction();
+                ZEDRealTimeInteractionRoutine();
             }
         }
         m_debugHitPoint.position = lastHitPos;
     }
 
+    // brief: Switches between real colour rendering and material colour rendering
     public void ToggleMeshRenderer()
     {
-        m_materialMeshRenderer.SetActive(!m_materialMeshRenderer.activeSelf);
+        m_meshRenderer.SetActive(!m_meshRenderer.activeSelf);
         m_zedRayCastSystem.ToggleCameraTexture();
     }
 
-    private void MeshBasedInteraction()
+    private void MeshPreProcessInteractionRoutine()
     {
-        Ray r = m_renderCam.ScreenPointToRay(Input.mousePosition);
+        Ray r = m_meshRenderCamera.ScreenPointToRay(Input.mousePosition);
         APARaycastHit hit;
         MaterialStruct mat;
 
@@ -149,12 +160,12 @@ public class GameController : MonoBehaviour {
         }
         else
         {
-            m_uiMaterialColourOutput.color = m_errorCol;
+            m_uiMaterialColourOutput.color = m_errorColour;
             m_uiMaterialTextOutput.text = "No Data / Ray Missed ";
         }
     }
 
-    private void ZEDBasedInteraction()
+    private void ZEDRealTimeInteractionRoutine()
     {
         m_zedRayCastSystem.TriggerRayCast();
     }
@@ -175,7 +186,7 @@ public class GameController : MonoBehaviour {
         else
         {
             finalMaterialName = "Error";
-            finalMaterialColour = m_errorCol;
+            finalMaterialColour = m_errorColour;
         }
 
         m_uiMaterialColourOutput.color = finalMaterialColour;
