@@ -328,12 +328,38 @@ public class ZEDMaterialRaycast : MonoBehaviour {
             fileData = File.ReadAllBytes(filePath);
             tex = new Texture2D(2, 2, TextureFormat.RGBA32, false, false);
             tex.LoadImage(fileData); //..this will auto-resize the texture dimensions.
-            tex.Apply();
+
+            // This flips vertically
+            var pixels = tex.GetPixels();
+            System.Array.Reverse(pixels, 0, pixels.Length);
+            tex.SetPixels(pixels);
+
+            // This then flips horizontally and uploads to GPU
+            tex = FlipTexture(tex);
         }
         else
         {
             Debug.LogError("Could not find file!");
         }
         return tex;
+    }
+
+    private Texture2D FlipTexture(Texture2D original)
+    {
+        Texture2D flipped = new Texture2D(original.width, original.height);
+
+        int xN = original.width;
+        int yN = original.height;
+
+        for (int i = 0; i < xN; i++)
+        {
+            for (int j = 0; j < yN; j++)
+            {
+                flipped.SetPixel(xN - i - 1, j, original.GetPixel(i, j));
+            }
+        }
+        flipped.Apply();
+
+        return flipped;
     }
 }
