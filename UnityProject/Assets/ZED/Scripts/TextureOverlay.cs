@@ -128,12 +128,12 @@ public class TextureOverlay : MonoBehaviour
         screen.transform.localScale = new Vector3(height * aspect, height, 1);
     }
 
-    public void ResetColourTexture()
+    public void UseStandardMaterial()
     {
         canvas.GetComponent<Renderer>().material = matRGB;
     }
 
-    public void ForceColourTextureToMatTexture(Texture2D matColTex)
+    public void UseEncodedMaterial(Texture2D matColTex)
     {
         matEncoded.SetTexture("_CameraTex", matColTex);
         canvas.GetComponent<Renderer>().material = matEncoded;

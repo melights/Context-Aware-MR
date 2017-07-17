@@ -89,11 +89,12 @@ public class ZEDMaterialRaycast : MonoBehaviour {
 
         if (m_showMaterialColours)
         {
-            m_textureOverlay.ForceColourTextureToMatTexture(m_materialColourTexture);
+            // have to pass in every time as texture gets updated
+            m_textureOverlay.UseEncodedMaterial(m_materialColourTexture);
         }
         else
         {
-            m_textureOverlay.ResetColourTexture();
+            m_textureOverlay.UseStandardMaterial();
         }
     }
 
@@ -101,25 +102,6 @@ public class ZEDMaterialRaycast : MonoBehaviour {
     {
         m_rayCastTriggered = true;
         m_mousePositionWhenTriggered = Input.mousePosition;
-    }
-
-    public Texture2D LoadPNG(string filePath)
-    {
-        Texture2D tex = null;
-        byte[] fileData;
-
-        if (File.Exists(filePath))
-        {
-            fileData = File.ReadAllBytes(filePath);
-            tex = new Texture2D(2, 2, TextureFormat.RGBA32, false, false);
-            tex.LoadImage(fileData); //..this will auto-resize the texture dimensions.
-            tex.Apply();
-        }
-        else
-        {
-            Debug.LogError("Could not find file!");
-        }
-        return tex;
     }
 
     private void MLFinishedCallback(object sender, System.EventArgs e)
@@ -223,37 +205,53 @@ public class ZEDMaterialRaycast : MonoBehaviour {
                 zedReadable.ReadPixels(new Rect(0, 0, m_zedRT.width, m_zedRT.height), 0, 0);
                 zedReadable.Apply();
 
-                Vector2 pixelUv;
+                Vector2 relMousePos = new Vector2();
 
-                pixelUv.x = m_mousePositionWhenTriggered.x / Screen.width;
-                pixelUv.y = m_mousePositionWhenTriggered.y / Screen.height;
+                relMousePos.x = m_mousePositionWhenTriggered.x / Screen.width;
+                relMousePos.y = m_mousePositionWhenTriggered.y / Screen.height;
 
-                pixelUv.y = 1.0f - pixelUv.y;
+                Vector2 dPixUv = relMousePos;
 
-                pixelUv.x *= zedReadable.width;
-                pixelUv.y *= zedReadable.height;
+                dPixUv.y = 1.0f - dPixUv.y;
+
+                dPixUv.x *= zedReadable.width;
+                dPixUv.y *= zedReadable.height;
 
                 // this only works for starting camera position and rotation
-                var pixelData = zedReadable.GetPixel((int)pixelUv.x, (int)pixelUv.y);
+                var depthPixelData = zedReadable.GetPixel((int)dPixUv.x, (int)dPixUv.y);
+                var matPixelData = new Color(0, 0, 0, 0);
+                MaterialStruct matFound = null;
+
+                if (m_materialColourTexture != null)
+                {
+                    Vector2 mPixUv = relMousePos;
+                    mPixUv.y = 1.0f - mPixUv.y;
+
+                    mPixUv.x *= m_materialColourTexture.width;
+                    mPixUv.y *= m_materialColourTexture.height;
+
+                    matPixelData = m_materialColourTexture.GetPixel((int)mPixUv.x, (int)mPixUv.y);
+
+                    matFound = MaterialRayCastSystem.FindMaterialStructFromColour(matPixelData);
+                }
 
                 // Need to guard against uninit areas of pixels
                 // This can happen if camera hasn't been able to do depth properly in area
 
                 if(
-                   float.IsNaN(pixelData.r) || 
-                   float.IsInfinity(pixelData.r) ||
-                   float.IsNaN(pixelData.g) ||
-                   float.IsInfinity(pixelData.g) ||
-                   float.IsNaN(pixelData.b) ||
-                   float.IsInfinity(pixelData.b)
+                   float.IsNaN(depthPixelData.r) || 
+                   float.IsInfinity(depthPixelData.r) ||
+                   float.IsNaN(depthPixelData.g) ||
+                   float.IsInfinity(depthPixelData.g) ||
+                   float.IsNaN(depthPixelData.b) ||
+                   float.IsInfinity(depthPixelData.b)
                    )
                     {
                     return;
                 }
 
-
                 // If changed process of getting this position, then remember to udpate for loop at bottom
-                Vector3 cVsPos = new Vector3(pixelData.r, pixelData.g, -pixelData.b);
+                Vector3 cVsPos = new Vector3(depthPixelData.r, depthPixelData.g, -depthPixelData.b);
 
                 // get back into object space
                 Matrix4x4 inverseView = m_zedCamera.worldToCameraMatrix.inverse;
@@ -284,7 +282,7 @@ public class ZEDMaterialRaycast : MonoBehaviour {
 
                     for (int i = 0; i < 4; i++)
                     {
-                        Vector2 uvOffset = pixelUv + offsets[i];
+                        Vector2 uvOffset = dPixUv + offsets[i];
                         Color sample = zedReadable.GetPixel((int)uvOffset.x, (int)uvOffset.y);
                         Vector4 vsPos = new Vector4(sample.r, sample.g, -sample.b, 1.0f);
 
@@ -315,15 +313,33 @@ public class ZEDMaterialRaycast : MonoBehaviour {
                     normalGen.Normalize();
 
                     // Update Game Reaction
-                    m_gameController.GameReaction(cWsPos, normalGen, null);
-
+                    m_gameController.GameReaction(cWsPos, normalGen, matFound);
                 }
 
-                Debug.Log(pixelUv);
-                Debug.Log(pixelData);
+                Debug.Log(dPixUv);
+                Debug.Log(depthPixelData);
             }
 
             RenderTexture.active = currentRT;
         }
+    }
+
+    private Texture2D LoadPNG(string filePath)
+    {
+        Texture2D tex = null;
+        byte[] fileData;
+
+        if (File.Exists(filePath))
+        {
+            fileData = File.ReadAllBytes(filePath);
+            tex = new Texture2D(2, 2, TextureFormat.RGBA32, false, false);
+            tex.LoadImage(fileData); //..this will auto-resize the texture dimensions.
+            tex.Apply();
+        }
+        else
+        {
+            Debug.LogError("Could not find file!");
+        }
+        return tex;
     }
 }

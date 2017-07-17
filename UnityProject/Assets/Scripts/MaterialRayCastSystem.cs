@@ -8,26 +8,26 @@ public class MaterialRayCastSystem : MonoBehaviour {
     [SerializeField]
     private DataManager m_dataManager;
 
-    private MaterialStruct[] m_materialDataCopy;
+    static private MaterialStruct[] m_materialDataCopy;
 
     // Use this for initialization
     void Start () {
         m_materialDataCopy = m_dataManager.GetMaterialDataArray();
     }
 
-    private MaterialStruct FindMaterialStructFromColour(Color col, ref MaterialStruct[] ms)
+    static public MaterialStruct FindMaterialStructFromColour(Color col)
     {
         string hexId = HexUtility.colorToHex(col);
 
         Debug.Log("Find " + hexId);
 
-        for (int i = 0; i < ms.Length; i++)
+        for (int i = 0; i < m_materialDataCopy.Length; i++)
         {
-            var hex = ms[i].m_hexCol;
+            var hex = m_materialDataCopy[i].m_hexCol;
 
             if (hex == hexId)
             {
-                return ms[i];
+                return m_materialDataCopy[i];
             }
         }
         return null;
@@ -51,7 +51,7 @@ public class MaterialRayCastSystem : MonoBehaviour {
             pixelUv.y *= matMainTex.height;
 
             var pixelColour = matMainTex.GetPixel((int)pixelUv.x, (int)pixelUv.y);
-            material = FindMaterialStructFromColour(pixelColour, ref m_materialDataCopy);
+            material = FindMaterialStructFromColour(pixelColour);
 
             return true;
         }
