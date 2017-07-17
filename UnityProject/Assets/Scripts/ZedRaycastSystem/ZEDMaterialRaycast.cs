@@ -3,10 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-
-
-// todo: force 16:9 resolution
-
 public class ZEDMaterialRaycast : MonoBehaviour {
 
     private ExecutePythonFile m_linkedPythonFile;
@@ -158,14 +154,15 @@ public class ZEDMaterialRaycast : MonoBehaviour {
             zedReadable.ReadPixels(new Rect(0, 0, colRt.width, colRt.height), 0, 0);
             zedReadable.Apply();
 
-             var bytes = zedReadable.EncodeToJPG(100);
+            var bytes = zedReadable.EncodeToJPG(100);
 
-             File.WriteAllBytes(m_colImageOutputPath, bytes);
+            File.WriteAllBytes(m_colImageOutputPath, bytes);
         }
         // Restore Active RT
         RenderTexture.active = currentRT;
     }
 
+    // note: we may not actually need to do this
     private void OnResize()
     {
         if (m_zedRT != null)
@@ -178,8 +175,7 @@ public class ZEDMaterialRaycast : MonoBehaviour {
         }
     }
 
-
-    // Has to be OnPostRender so we can grab render targets
+    // Has to be OnPostRender so we can grab render targets safely
     private void OnPostRender()
     {
         if (m_lastWidth != Screen.width || m_lastHeight != Screen.height)
@@ -315,11 +311,9 @@ public class ZEDMaterialRaycast : MonoBehaviour {
                     // Update Game Reaction
                     m_gameController.GameReaction(cWsPos, normalGen, matFound);
                 }
-
-                Debug.Log(dPixUv);
-                Debug.Log(depthPixelData);
             }
 
+            // Restore original active render texture
             RenderTexture.active = currentRT;
         }
     }
