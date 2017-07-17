@@ -111,7 +111,7 @@ public class ZEDMaterialRaycast : MonoBehaviour {
         if (File.Exists(filePath))
         {
             fileData = File.ReadAllBytes(filePath);
-            tex = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+            tex = new Texture2D(2, 2, TextureFormat.RGBA32, false, false);
             tex.LoadImage(fileData); //..this will auto-resize the texture dimensions.
             tex.Apply();
         }

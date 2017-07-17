@@ -11,7 +11,9 @@ public class TextureOverlay : MonoBehaviour
     /// <summary>
     /// It's the main material, used to set the color and the depth
     /// </summary>
-    private Material matRGB;
+    public Material matRGB;
+
+    public Material matEncoded; // colour preview
 
     /// <summary>
     /// All the textures displayed are in 16/9
@@ -66,7 +68,7 @@ public class TextureOverlay : MonoBehaviour
     void Start()
     {
         //Set textures to the shader
-        matRGB = canvas.GetComponent<Renderer>().material;
+        //matRGB = canvas.GetComponent<Renderer>().material;
         sl.ZEDCamera zedCamera = sl.ZEDCamera.GetInstance();
         if (videoType == sl.VIEW.LEFT_GREY || videoType == sl.VIEW.RIGHT_GREY || videoType == sl.VIEW.LEFT_UNRECTIFIED_GREY || videoType == sl.VIEW.RIGHT_UNRECTIFIED_GREY)
         {
@@ -87,6 +89,10 @@ public class TextureOverlay : MonoBehaviour
         matRGB.SetTexture("_CameraTex", camZedLeft);
         matRGB.SetTexture("_DepthXYZTex", depthXYZZed);
 
+        //matEncoded.SetTexture("_CameraTex", camZedLeft);
+        matEncoded.SetTexture("_DepthXYZTex", depthXYZZed);
+
+
         if (zedCamera.CameraIsReady)
         {
             mainCamera.fieldOfView = zedCamera.GetFOV() * Mathf.Rad2Deg;
@@ -99,8 +105,6 @@ public class TextureOverlay : MonoBehaviour
             scale(canvas.gameObject, mainCamera.fieldOfView);
         }
     }
-
-
 
     /// <summary>
     /// Get back the FOV from the Projection matrix, to bypass a round number
@@ -126,12 +130,13 @@ public class TextureOverlay : MonoBehaviour
 
     public void ResetColourTexture()
     {
-        matRGB.SetTexture("_CameraTex", camZedLeft);
+        canvas.GetComponent<Renderer>().material = matRGB;
     }
 
     public void ForceColourTextureToMatTexture(Texture2D matColTex)
     {
-        matRGB.SetTexture("_CameraTex", matColTex);
+        matEncoded.SetTexture("_CameraTex", matColTex);
+        canvas.GetComponent<Renderer>().material = matEncoded;
     }
 }
 

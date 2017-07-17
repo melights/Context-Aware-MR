@@ -198,7 +198,6 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 12488261}
-  - component: {fileID: 12488262}
   m_Layer: 0
   m_Name: ZedSystem
   m_TagString: Untagged
@@ -227,17 +226,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &12488262
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 12488260}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e4cc9e008d39ff46b8f6a11def08c42, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &36763577
 GameObject:
   m_ObjectHideFlags: 0
@@ -1253,6 +1241,16 @@ Prefab:
       propertyPath: videoMode
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114769856185038282, guid: 76db3eb81fd21ae45bab5204e324ae42,
+        type: 2}
+      propertyPath: matRGB
+      value: 
+      objectReference: {fileID: 2100000, guid: 851b6eeee88b1e04c8a22454a27421a1, type: 2}
+    - target: {fileID: 114769856185038282, guid: 76db3eb81fd21ae45bab5204e324ae42,
+        type: 2}
+      propertyPath: matEncoded
+      value: 
+      objectReference: {fileID: 2100000, guid: bdf479d8e7e1441489f10500161180d2, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 76db3eb81fd21ae45bab5204e324ae42, type: 2}
   m_IsPrefabParent: 0
