@@ -43,12 +43,8 @@
 using namespace std;
 
 //// Create ZED object (camera, callback, pose)
-std::thread zed_callback; //Thread to handle ZED data
 sl::Camera zed; //ZED Camera
 sl::Pose camera_pose; //ZED SDK pose to handle the position of the camera in space.
-
-//// States
-bool quit = false; //boolean for exit
 
 // OpenGL Window to display the ZED in world space
 TrackingViewer viewer;
@@ -57,13 +53,9 @@ TrackingViewer viewer;
 std::string txtName;
 
 //// Sample functions
-void startZED();
 void run();
-void close();
 void transformPose(sl::Transform &pose, float tx);
 void parse_args(int argc, char **argv, sl::InitParameters &initParameters);
-
-
 
 int main(int argc, char **argv) {
 
@@ -93,27 +85,10 @@ int main(int argc, char **argv) {
 	// Enable motion tracking
     zed.enableTracking(trackingParameters);
 
-	// Initialize OpenGL viewer
-    viewer.init();
+	run();
 
-	// Start ZED callback
-	startZED();
-
-	// Set GLUT callback
-    glutCloseFunc(close);
-    glutMainLoop();
-
+	zed.close();
     return 0;
-}
-
-
-/**
-*  This functions start the ZED's thread that grab images and data.
-**/
-void startZED()
-{
-	quit = false;
-	zed_callback = std::thread(run);
 }
 
 /**
@@ -135,26 +110,38 @@ void run() {
 	char output_translation[256];
 	char output_rotationMatrix[512];
 
+	sl::Mat zed_image;
+
 	// loop until quit flag has been set to true
 	int frameNumber = 0;
-	while (!quit)
-	{
+
+	char key = ' ';
+	while (key != 'q') {
+
+		key = cv::waitKey(5);
+
 		if (zed.grab() == sl::SUCCESS)
 		{
 			// Get camera position in World frame
 			sl::TRACKING_STATE tracking_state = zed.getPosition(camera_pose, sl::REFERENCE_FRAME_WORLD);
+
+			zed.retrieveImage(zed_image, sl::VIEW_LEFT);
+
+			cv::Mat cvMat = cv::Mat(zed_image.getHeight(), zed_image.getWidth(), CV_8UC4, zed_image.getPtr<sl::uchar1>(sl::MEM_CPU));
+
+			cv::imshow("VIEW", cvMat);
+
 
 			// Get motion tracking confidence
 			int tracking_confidence = camera_pose.pose_confidence;
 
 			if (tracking_state == sl::TRACKING_STATE_OK)
 			{
-
 				// Extract 3x1 rotation from pose
-				sl::Vector3<float> rotation = camera_pose.getRotationVector();
-				rx = rotation.x;
-				ry = rotation.y;
-				rz = rotation.z;
+				//sl::Vector3<float> rotation = camera_pose.getRotationVector();
+				//rx = rotation.x;
+				//ry = rotation.y;
+				//rz = rotation.z;
 
 				// Extract translation from pose
 				sl::Vector3<float> translation = camera_pose.getTranslation();
@@ -162,17 +149,12 @@ void run() {
 				ty = translation.ty;
 				tz = translation.tz;
 
-				// Fill text
-				sprintf(text_translation, "%3.2f; %3.2f; %3.2f", tx, ty, tz);
-				sprintf(text_rotation, "%3.2f; %3.2f; %3.2f", rx, ry, rz);
-
-
-
-
 				// Create text file for each frame
-				std::string filename = std::to_string(frameNumber) + ".txt";
+				std::string txtFN = std::to_string(frameNumber) + ".txt";
+				std::string pngFN = std::to_string(frameNumber) + ".png";
+
 				ofstream outputFile;
-				outputFile.open(filename);
+				outputFile.open(txtFN);
 
 				if (!outputFile.is_open())
 				{
@@ -218,28 +200,13 @@ void run() {
 
 					outputFile << "\nCamera Intrinsics: focal height width";
 					outputFile << "\n0 720 1280";
+
+					outputFile.close();
+
+					// Write Image To File
+					cv::imwrite(pngFN, cvMat);
 				}
 
-
-
-
-
-					//outputFile.open(txtName + ".csv");
-					//if (!outputFile.is_open())
-					//	cout << "WARNING: Can't create CSV file. Launch the sample with Administrator rights" << endl;
-					//else
-					//	outputFile << "Timestamp(ns);Rotation_X(rad);Rotation_Y(rad);Rotation_Z(rad);Position_X(m);Position_Y(m);Position_Z(m);" << endl;
-			
-
-				/// Save the pose data in the csv file
-				//if (outputFile.is_open())
-				//	outputFile << zed.getCameraTimestamp() << "; " << text_translation << "; " << text_rotation << ";" << endl;
-
-				
-				
-				
-				
-				
 				// Separate the tracking frame (reference for pose) and the camera frame (reference for the image)
 				// to have the pose given at the center of the camera. If you are not using this function, the tracking frame and camera frame will be the same (Left sensor).
 				// In a more generic way, the formulae is as follow : Pose(new reference frame) = M.inverse() * Pose (camera frame) * M, where M is the transform to go from one frame to another.
@@ -249,7 +216,7 @@ void run() {
 				// Send all the information to the viewer
 				viewer.updateZEDPosition(camera_pose.pose_data);
 
-
+				// Advance frame number
 				frameNumber++;
 			}
 
@@ -259,18 +226,6 @@ void run() {
 		}
 		else sl::sleep_ms(1);
 	}
-}
-
-/**
-*  This function frees and close the ZED, its callback(thread) and the viewer
-**/
-void close() {
-	quit = true;
-	zed_callback.join();
-	zed.disableTracking("./ZED_spatial_memory");
-
-	zed.close();
-	viewer.exit();
 }
 
 /**
@@ -308,7 +263,3 @@ void parse_args(int argc, char **argv, sl::InitParameters &initParameters) {
     //    }
     //}
 }
-
-
-
-
