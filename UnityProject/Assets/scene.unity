@@ -1506,7 +1506,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0b8f01e4836b914ebdd2c44128af6e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_cameraSystemEnum: 1
+  m_cameraSystemEnum: 0
   m_materialRayCastSystem: {fileID: 874633727}
   m_dataManager: {fileID: 874633725}
   m_errorColour: {r: 0, g: 0, b: 0, a: 0}
