@@ -7,6 +7,9 @@ public class ThrowableObject : MonoBehaviour {
     [SerializeField]
     private GameObject m_explosionParticle;
 
+    [SerializeField]
+    private List<AudioClip> m_brokenSoundFX;
+
     bool m_broken = false;
 
     private GameController m_gameController;
@@ -49,7 +52,16 @@ public class ThrowableObject : MonoBehaviour {
                 // Depending on material it should maybe shatter?
                 if (mat.m_breakOnImpact == 1)
                 {
+                    // Spawn sounds yey
+                    {
+                        GameObject soundSpawn = new GameObject();
+                        soundSpawn.transform.position = transform.position;
+                        var ac = soundSpawn.AddComponent<AudioSource>();
 
+                        int randIndex = Random.Range(0, m_brokenSoundFX.Count);
+                        ac.clip = m_brokenSoundFX[randIndex];
+                        ac.Play();
+                    }
 
                     // Trigger Game Reaction
                     Vector3 hitWsPosition = hit.point;
