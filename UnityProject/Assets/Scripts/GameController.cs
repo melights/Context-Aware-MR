@@ -183,7 +183,14 @@ public class GameController : MonoBehaviour {
     // brief: Switches between real colour rendering and material colour rendering
     public void ToggleMeshRenderer()
     {
-        m_meshRenderer.SetActive(!m_meshRenderer.activeSelf);
+        var mcs = m_meshRenderer.GetComponentsInChildren<MeshRenderer>();
+
+        for (int i = 0; i < mcs.Length; i++)
+        {
+            mcs[i].enabled = !mcs[i].enabled;
+        }
+
+       // m_meshRenderer.SetActive(!m_meshRenderer.activeSelf);
         m_zedRayCastSystem.ToggleCameraTexture();
     }
 
