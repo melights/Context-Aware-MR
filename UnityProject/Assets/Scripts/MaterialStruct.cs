@@ -6,6 +6,7 @@ public class MaterialStruct {
 
     public string m_name;
     public string m_hexCol;
+    public int m_breakOnImpact;
     public Color m_colour;
     public int m_index;
 
@@ -14,12 +15,14 @@ public class MaterialStruct {
     public MaterialStruct(
         string name,
         string hexCol,
+        int breakOnImpact,
         Color colour,
         int index          
         )
     {
         m_name = name;
         m_hexCol = hexCol;
+        m_breakOnImpact = breakOnImpact;
         m_colour = colour;
         m_index = index;
     }

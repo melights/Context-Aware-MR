@@ -2,95 +2,118 @@
 	"MATERIAL_DEFINITIONS" : [
 	{
 		"NAME" : "brick",
-		"HEX_COL" : "#00c000"	
+		"HEX_COL" : "#00c000",
+		"BREAK_ON_IMPACT" : 1
 	},
 	{
 		"NAME" : "carpet",
-		"HEX_COL" : "#800000"	
+		"HEX_COL" : "#800000",
+		"BREAK_ON_IMPACT" : 0
 	},
 	{
 		"NAME" : "ceramic",
-		"HEX_COL" : "#808000"	
+		"HEX_COL" : "#808000",
+		"BREAK_ON_IMPACT" : 1
 	},
 	{
 		"NAME" : "fabric",
-		"HEX_COL" : "#00408c"	
+		"HEX_COL" : "#00408c",
+		"BREAK_ON_IMPACT" : 0		
 	},
 	{
 		"NAME" : "foliage",
-		"HEX_COL" : "#000080"	
+		"HEX_COL" : "#000080",
+		"BREAK_ON_IMPACT" : 0		
 	},
 	{
 		"NAME" : "food",
-		"HEX_COL" : "#800080"	
+		"HEX_COL" : "#800080",
+		"BREAK_ON_IMPACT" : 0		
 	},
 	{
 		"NAME" : "glass",
-		"HEX_COL" : "#008080"	
+		"HEX_COL" : "#008080",
+		"BREAK_ON_IMPACT" : 1
 	},	
 	{
 		"NAME" : "hair",
-		"HEX_COL" : "#808080"	
+		"HEX_COL" : "#808080",
+		"BREAK_ON_IMPACT" : 0		
 	},	
 	{
 		"NAME" : "leather",
-		"HEX_COL" : "#400000"	
+		"HEX_COL" : "#400000",
+		"BREAK_ON_IMPACT" : 0		
 	},	
 	{
 		"NAME" : "metal",
-		"HEX_COL" : "#c00080"	
+		"HEX_COL" : "#c00080",
+		"BREAK_ON_IMPACT" : 1		
 	},		
 	{
 		"NAME" : "mirror",
-		"HEX_COL" : "#438000"	
+		"HEX_COL" : "#438000",
+		"BREAK_ON_IMPACT" : 1		
 	},	
 	{
 		"NAME" : "other",
-		"HEX_COL" : "#ffffff"	
+		"HEX_COL" : "#ffffff",
+		"BREAK_ON_IMPACT" : 0		
 	},		
 	{
 		"NAME" : "painted",
-		"HEX_COL" : "#400080"	
+		"HEX_COL" : "#400080",
+		"BREAK_ON_IMPACT" : 1		
 	},
 	{
 		"NAME" : "paper",
-		"HEX_COL" : "#644632"	
+		"HEX_COL" : "#644632",
+		"BREAK_ON_IMPACT" : 0		
 	},
 	{
 		"NAME" : "plastic",
-		"HEX_COL" : "#324664"	
+		"HEX_COL" : "#324664",
+		"BREAK_ON_IMPACT" : 1		
 	},
 	{
 		"NAME" : "polishedstone",
-		"HEX_COL" : "#c68080"	
+		"HEX_COL" : "#c68080",
+		"BREAK_ON_IMPACT" : 1		
 	},
 	{
 		"NAME" : "skin",
-		"HEX_COL" : "#004000"	
+		"HEX_COL" : "#004000",
+		"BREAK_ON_IMPACT" : 0
 	},
 	{
 		"NAME" : "sky",
-		"HEX_COL" : "#804000"	
+		"HEX_COL" : "#804000",
+		"BREAK_ON_IMPACT" : 0
 	},
 	{
 		"NAME" : "stone",
-		"HEX_COL" : "#00ff00"	
+		"HEX_COL" : "#00ff00",
+		"BREAK_ON_IMPACT" : 1
 	},
 	{
 		"NAME" : "tile",
-		"HEX_COL" : "#80c000"	
+		"HEX_COL" : "#80c000",
+		"BREAK_ON_IMPACT" : 1		
 	},
 	{
 		"NAME" : "wallpaper",
-		"HEX_COL" : "#004080"	
+		"HEX_COL" : "#004080",
+		"BREAK_ON_IMPACT" : 1		
 	},
 	{
 		"NAME" : "water",
-		"HEX_COL" : "#408080"	
+		"HEX_COL" : "#408080",
+		"BREAK_ON_IMPACT" : 0		
 	},
 	{
 		"NAME" : "wood",
-		"HEX_COL" : "#c08000"	
+		"HEX_COL" : "#c08000",
+		"BREAK_ON_IMPACT" : 1		
 	}
 	]
 }

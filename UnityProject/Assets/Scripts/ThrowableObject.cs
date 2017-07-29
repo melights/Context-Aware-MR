@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class ThrowableObject : MonoBehaviour {
 
+    [SerializeField]
+    private GameObject m_explosionParticle;
+
     bool m_broken = false;
 
     private GameController m_gameController;
@@ -43,10 +46,28 @@ public class ThrowableObject : MonoBehaviour {
 
             if (MaterialRayCastSystem.RayVsSceneMaterial(r, out hit, out mat))
             {
-                Vector3 hitWsPosition = hit.point;
-                Vector3 hitWsNormal = hit.transform.TransformVector(hit.normal);
+                // Depending on material it should maybe shatter?
+                if (mat.m_breakOnImpact == 1)
+                {
 
-                m_gameController.GameReaction(hitWsPosition, hitWsNormal, mat);
+
+                    // Trigger Game Reaction
+                    Vector3 hitWsPosition = hit.point;
+                    Vector3 hitWsNormal = hit.transform.TransformVector(hit.normal);
+
+                    // Shatter
+                    var particle = Instantiate(m_explosionParticle) as GameObject;
+                    particle.transform.SetPositionAndRotation(hitWsPosition, Quaternion.LookRotation(hitWsNormal, Vector3.up));
+                    
+                    m_gameController.GameReaction(hitWsPosition, hitWsNormal, mat);
+
+                    Destroy(gameObject);
+
+                }
+
+
+
+
             }
         }
     }

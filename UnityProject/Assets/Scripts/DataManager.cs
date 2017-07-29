@@ -28,13 +28,14 @@ public class DataManager : MonoBehaviour
         
             string name = thisMaterial["NAME"];
             string colHex = thisMaterial["HEX_COL"];
+            int breakOnImpact = thisMaterial["BREAK_ON_IMPACT"].AsInt;
 
             Color col = HexUtility.hexToColor(colHex);
             string hexColUnityFormat = HexUtility.colorToHex(col);
 
             //Debug.Log(name + hexColUnityFormat);
 
-            m_materialData[i] = new MaterialStruct(name, hexColUnityFormat, col, i);
+            m_materialData[i] = new MaterialStruct(name, hexColUnityFormat, breakOnImpact, col, i);
         }
     }
 

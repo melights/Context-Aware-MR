@@ -57,7 +57,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: b349fbfca1b4c16468964340cd8508c3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -82,7 +82,7 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1108670377769536}
-  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 4300000, guid: 0491641e104282c4c96ad7b9d14ffdd5, type: 3}
 --- !u!54 &54862230554018186
 Rigidbody:
   m_ObjectHideFlags: 1
@@ -108,7 +108,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 2, y: 0.2, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &114804001378278276
 MonoBehaviour:
@@ -121,3 +121,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fa43d0d0c0df2c4bbb9c929d50dfd46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_explosionParticle: {fileID: 1984702957962302, guid: 680bc7617e761ac469126995183796b1,
+    type: 2}
