@@ -38,6 +38,12 @@ public class GameController : MonoBehaviour {
     [SerializeField]
     private GameObject m_uiTriggerMl;
 
+    // Throwable Weapon
+    [SerializeField]
+    private GameObject m_throwablePrefab;
+
+    [SerializeField]
+    private GameObject m_collidersParentGO;
 
     // MESH PRE PROCESS SYSTEMS
 
@@ -88,8 +94,11 @@ public class GameController : MonoBehaviour {
     private AudioSource gunAudioSource;
     private ShotgunFire shotgunFire;
 
+    private bool m_useShotgunWeapon = true;
+
     // Use this for initialization
     void Start () {
+
         m_weaponDataCopy = m_dataManager.GetWeaponDataArray();
 
         m_meshSystemGO.SetActive(false);
@@ -117,6 +126,25 @@ public class GameController : MonoBehaviour {
             shotgunFire = m_zedFireWeapon;
         }
     }
+
+    void ThrowObject()
+    {
+        Ray r = m_meshRenderCamera.ScreenPointToRay(Input.mousePosition);
+
+
+        GameObject spawned = Instantiate(m_throwablePrefab) as GameObject;
+        spawned.transform.position = r.origin;
+
+
+        Rigidbody rb = spawned.GetComponent<Rigidbody>();
+        rb.velocity = r.direction * 5.0f;
+
+        // this could be creating a copy, be careful
+        GameController gamecontrolelr = this;
+
+        spawned.GetComponent<ThrowableObject>().SetInformation(gamecontrolelr);
+
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -124,15 +152,29 @@ public class GameController : MonoBehaviour {
         // Fire Ray but check if on UI too
         if (Input.GetMouseButtonDown(0) && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
         {
-            shotgunFire.FireWeapon();
+            if (m_useShotgunWeapon)
+            {
+                shotgunFire.FireWeapon();
 
-            if (m_cameraSystemEnum == ECameraSystem.MeshPreProcessSystem)
-            {
-                MeshPreProcessInteractionRoutine();
+                // Play Sounds
+                {
+                    gunAudioSource.clip = m_weaponDataCopy[0].m_weaponFireSFX;
+                    gunAudioSource.Play();
+                }
+
+                // todo: sort out these routines to take into account throwables
+                if (m_cameraSystemEnum == ECameraSystem.MeshPreProcessSystem)
+                {
+                    MeshPreProcessInteractionRoutine();
+                }
+                else if (m_cameraSystemEnum == ECameraSystem.ZEDRealtimeSystem)
+                {
+                    ZEDRealTimeInteractionRoutine();
+                }
             }
-            else if (m_cameraSystemEnum == ECameraSystem.ZEDRealtimeSystem)
+            else
             {
-                ZEDRealTimeInteractionRoutine();
+                ThrowObject();
             }
         }
         m_debugHitPoint.position = lastHitPos;
@@ -145,13 +187,21 @@ public class GameController : MonoBehaviour {
         m_zedRayCastSystem.ToggleCameraTexture();
     }
 
+    public void SwitchWeapon()
+    {
+        m_useShotgunWeapon = !m_useShotgunWeapon;
+
+        // Show or hide shotgun
+        shotgunFire.gameObject.SetActive(m_useShotgunWeapon);
+    }
+
     private void MeshPreProcessInteractionRoutine()
     {
         Ray r = m_meshRenderCamera.ScreenPointToRay(Input.mousePosition);
         APARaycastHit hit;
         MaterialStruct mat;
 
-        if (m_materialRayCastSystem.RayVsSceneMaterial(r, out hit, out mat))
+        if (MaterialRayCastSystem.RayVsSceneMaterial(r, out hit, out mat))
         {
             Vector3 hitWsPosition = hit.point;
             Vector3 hitWsNormal = hit.transform.TransformVector(hit.normal);
@@ -200,6 +250,16 @@ public class GameController : MonoBehaviour {
         int weaponIndex = 0;
         var weaponStruct = m_weaponDataCopy[weaponIndex];
 
+        // we are in throwing mode
+        if (!m_useShotgunWeapon)
+        {
+            // only do collision reaction for glass, as likely thing to break
+            if (finalMaterialName != "glass")
+            {
+                return;
+            }
+        }
+
         // Spawn Particle Effects
         {
             // note: uses material index to go into array
@@ -218,12 +278,6 @@ public class GameController : MonoBehaviour {
 
             // Orientate to normal
             newDecal.transform.SetPositionAndRotation(hitWsPosition, Quaternion.LookRotation(hitWsNormal, Vector3.up));
-        }
-
-        // Play Sounds
-        {
-            gunAudioSource.clip = weaponStruct.m_weaponFireSFX;
-            gunAudioSource.Play();
         }
     }
 }

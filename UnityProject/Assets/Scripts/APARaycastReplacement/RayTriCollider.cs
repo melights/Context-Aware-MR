@@ -24,6 +24,8 @@ public class RayTriCollider : MonoBehaviour {
 
 
         APAObjectDictionary.singleton.Init(Callback, bc.bounds);
+
+        bc.enabled = false;
     }
 	
 	// Update is called once per frame

@@ -33,7 +33,7 @@ public class MaterialRayCastSystem : MonoBehaviour {
         return null;
     }
 
-    public bool RayVsSceneMaterial(Ray r, out APARaycastHit hit, out MaterialStruct material)
+    static public bool RayVsSceneMaterial(Ray r, out APARaycastHit hit, out MaterialStruct material)
     {
         hit = null;
         material = null;
