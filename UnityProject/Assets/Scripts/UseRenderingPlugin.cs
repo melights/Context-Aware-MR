@@ -80,8 +80,23 @@ public class UseRenderingPlugin : MonoBehaviour
 #endif
 	private static extern IntPtr GetRenderEventFunc();
 
-	private int width = 640;
-	private int height = 480;
+
+
+ private delegate void DebugCallback(string message);
+ #if UNITY_IPHONE && !UNITY_EDITOR
+	[DllImport ("__Internal")]
+#else
+	[DllImport("RenderingPlugin")]
+#endif
+     private static extern void RegisterDebugCallback(DebugCallback callback);
+  
+ private static void DebugMethod(string message)
+ {
+     Debug.Log("Plugins: " + message);
+ }
+
+	private int width = 960;
+	private int height = 540;
 
 	private Texture2D texture;
 
@@ -98,6 +113,7 @@ public class UseRenderingPlugin : MonoBehaviour
 
     void Start()
 	{
+        RegisterDebugCallback(new DebugCallback(DebugMethod));
         SingleCamera = GameObject.Find("Camera");
         Camera cam = Camera.main;
         Background = GameObject.Find("Plane");

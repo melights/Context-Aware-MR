@@ -4375,7 +4375,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   init_success: 0
-  m_targetVideoFrameRate: 0
+  m_targetVideoFrameRate: 5
 --- !u!1 &1777267796 stripped
 GameObject:
   m_PrefabParentObject: {fileID: 100002, guid: 9abd6b0f07dd48e42b6203c68fb1d803, type: 3}

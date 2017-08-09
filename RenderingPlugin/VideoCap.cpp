@@ -21,11 +21,11 @@ LINKFLAGS =
 #include <iostream>
 #include <sstream>
 #include <limits>
-#include <windows.h>
+//#include <windows.h>
 #undef max
 using namespace std;
 using namespace cv;
-static HWND s_hConsole = NULL;
+//static HWND s_hConsole = NULL;
 //defalut constructor
 VideoSource::VideoSource()
 {
@@ -35,19 +35,19 @@ VideoSource::VideoSource()
 //constructor index_0/1 for left and right camera
 bool VideoSource::open_webcam(int index)
 {
-	s_hConsole = GetConsoleWindow();
-	if (s_hConsole == NULL)
-	{
-		AllocConsole();
-		s_hConsole = GetConsoleWindow();
-	}
+	// s_hConsole = GetConsoleWindow();
+	// if (s_hConsole == NULL)
+	// {
+	// 	AllocConsole();
+	// 	s_hConsole = GetConsoleWindow();
+	// }
 	
-	if (s_hConsole != NULL)
-	{
-		freopen("CONIN$", "r", stdin);
-		freopen("CONOUT$", "w", stdout);
-		freopen("CONOUT$", "w", stderr);
-	}
+	// if (s_hConsole != NULL)
+	// {
+	// 	freopen("CONIN$", "r", stdin);
+	// 	freopen("CONOUT$", "w", stdout);
+	// 	freopen("CONOUT$", "w", stderr);
+	// }
 
 	
 	index_g = index;
@@ -57,10 +57,10 @@ bool VideoSource::open_webcam(int index)
 		char filename_img[500];
 		char filename_pos[500];
 		//poses.reserve(451);
-		for (int i = 0; i <= IMAGE_NUM; i++)
+		for (int i = 1; i <= IMAGE_NUM; i++)
 		{
-			sprintf(filename_img, "E:\\UnityPlugin-master\\UnityPlugin-master\\KinFuSaveImage\\%d.png", i);
-			sprintf(filename_pos, "E:\\UnityPlugin-master\\UnityPlugin-master\\KinFuSaveImage\\%d.txt", i);
+			sprintf(filename_img, "/home/long/ar/UnityProject/rgb/%d.jpg", i);
+			sprintf(filename_pos, "/home/long/ar/UnityProject/rgb/%d.txt", i);
 			image = cv::imread(filename_img);
 			images.push_back(image.clone());
 			readCamPoseFile(filename_pos);

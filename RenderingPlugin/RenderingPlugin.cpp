@@ -8,8 +8,9 @@
 #include <vector>
 #include <string>
 #include <thread>
-#include <windows.h>
+//#include <windows.h>
 #include "VideoCap.h"
+#include <string>
 //#include <GL/gl.h>
 //#include<GL/glut.h>
 // --------------------------------------------------------------------------
@@ -27,25 +28,41 @@
 #	include <d3d12.h>
 #	include "Unity/IUnityGraphicsD3D12.h"
 #endif
-
-#if SUPPORT_OPENGLES
-	#if UNITY_IPHONE
-		#include <OpenGLES/ES2/gl.h>
-	#elif UNITY_ANDROID
-		#include <GLES2/gl2.h>
-	#endif
-#elif SUPPORT_OPENGL
-	#if UNITY_WIN || UNITY_LINUX
-		#include <GL/gl.h>
-	#else
-		#include <OpenGL/gl.h>
-	#endif
+#if SUPPORT_OPENGL
+#	include "GL/glew.h"
+#endif
+#if SUPPORT_OPENGL_UNIFIED
+#	if UNITY_IPHONE
+#		include <OpenGLES/ES2/gl.h>
+#	elif UNITY_ANDROID
+#		include <GLES2/gl2.h>
+#	else
+#		include "GL/glew.h"
+#	endif
 #endif
 
-static HWND s_hConsole = NULL;
+//static HWND s_hConsole = NULL;
 // --------------------------------------------------------------------------
 // Helper utilities
 
+typedef void(*DebugCallback) (const char *str);
+ DebugCallback gDebugCallback;
+ 
+ extern "C" void UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API RegisterDebugCallback(DebugCallback callback)
+ {
+     if (callback)
+     {
+         gDebugCallback = callback;
+     }
+ }
+
+ void DebugInUnity(std::string message)
+ {
+     if (gDebugCallback)
+     {
+         gDebugCallback(message.c_str());
+     }
+ }
 
 // Prints a string
 static void DebugLog (const char* str)
@@ -112,12 +129,12 @@ extern "C" void UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API DestroyWebCam()
 
 // --------------------------------------------------------------------------
 // SetTextureFromUnity, an example function we export which is called by one of the scripts.
-#ifdef SUPPORT_OPENGLES
+#ifdef SUPPORT_OPENGL_UNIFIED
 static int   g_TexWidth  = 0;
 static int   g_TexHeight = 0;
 #endif
 
-#ifdef SUPPORT_OPENGLES
+#ifdef SUPPORT_OPENGL_UNIFIED
 extern "C" void UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API SetTextureFromUnity(void* texturePtr, int w, int h)
 #else
 extern "C" void UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API SetTextureFromUnity(void* texturePtr)
@@ -127,7 +144,7 @@ extern "C" void UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API SetTextureFromUnity(v
 	// Will update texture pixels each frame from the plugin rendering event (texture update
 	// needs to happen on the rendering thread).
 	g_TexturePointer = texturePtr;
-#ifdef SUPPORT_OPENGLES
+#ifdef SUPPORT_OPENGL_UNIFIED
 	g_TexWidth = w;
 	g_TexHeight = h;
 #endif
@@ -199,7 +216,7 @@ static void DoEventGraphicsDeviceD3D11(UnityGfxDeviceEventType eventType);
 #if SUPPORT_D3D12
 static void DoEventGraphicsDeviceD3D12(UnityGfxDeviceEventType eventType);
 #endif
-#if SUPPORT_OPENGLES
+#if SUPPORT_OPENGL_UNIFIED
 static void DoEventGraphicsDeviceGLES(UnityGfxDeviceEventType eventType);
 #endif
 
@@ -251,9 +268,10 @@ static void UNITY_INTERFACE_API OnGraphicsDeviceEvent(UnityGfxDeviceEventType ev
 		DoEventGraphicsDeviceD3D12(eventType);
 	#endif
 	
-	#if DoEventGraphicsDeviceGLES
-	if (currentDeviceType == kUnityGfxRendererOpenGLES20 ||
-		currentDeviceType == kUnityGfxRendererOpenGLES30)
+	#if SUPPORT_OPENGL_UNIFIED
+	if (currentDeviceType == kUnityGfxRendererOpenGLES20||
+		currentDeviceType == kUnityGfxRendererOpenGLES30||
+        currentDeviceType == kUnityGfxRendererOpenGLCore)
 		DoEventGraphicsDeviceGLES(eventType);
 	#endif
 }
@@ -646,7 +664,7 @@ static void DoEventGraphicsDeviceD3D12(UnityGfxDeviceEventType eventType)
 // OpenGL ES / Core setup/teardown code
 
 
-#if SUPPORT_OPENGLES
+#if SUPPORT_OPENGL_UNIFIED
 
 #define VPROG_SRC(ver, attr, varying)								\
 	ver																\
@@ -666,7 +684,7 @@ static void DoEventGraphicsDeviceD3D12(UnityGfxDeviceEventType eventType)
 
 static const char* kGlesVProgTextGLES2		= VPROG_SRC("\n", "attribute", "varying");
 static const char* kGlesVProgTextGLES3		= VPROG_SRC("#version 300 es\n", "in", "out");
-
+static const char* kGlesVProgTextGLCore		= VPROG_SRC("#version 150\n", "in", "out");
 #undef VPROG_SRC
 
 #define FSHADER_SRC(ver, varying, outDecl, outVar)	\
@@ -681,12 +699,14 @@ static const char* kGlesVProgTextGLES3		= VPROG_SRC("#version 300 es\n", "in", "
 
 static const char* kGlesFShaderTextGLES2	= FSHADER_SRC("\n", "varying", "\n", "gl_FragColor");
 static const char* kGlesFShaderTextGLES3	= FSHADER_SRC("#version 300 es\n", "in", "out lowp vec4 fragColor;\n", "fragColor");
-
+static const char* kGlesFShaderTextGLCore	= FSHADER_SRC("#version 150\n", "in", "out lowp vec4 fragColor;\n", "fragColor");
 #undef FSHADER_SRC
 
 static GLuint	g_VProg;
 static GLuint	g_FShader;
 static GLuint	g_Program;
+static GLuint	g_VertexArray;
+static GLuint	g_ArrayBuffer;
 static int		g_WorldMatrixUniformIndex;
 static int		g_ProjMatrixUniformIndex;
 
@@ -715,6 +735,16 @@ static void DoEventGraphicsDeviceGLES(UnityGfxDeviceEventType eventType)
 			g_VProg		= CreateShader(GL_VERTEX_SHADER, kGlesVProgTextGLES3);
 			g_FShader	= CreateShader(GL_FRAGMENT_SHADER, kGlesFShaderTextGLES3);
 		}
+		else if(s_DeviceType == kUnityGfxRendererOpenGLCore)
+		{
+			::printf("OpenGL Core device\n");
+			glewExperimental = GL_TRUE;
+			glewInit();
+			glGetError(); // Clean up error generated by glewInit
+
+			g_VProg         = CreateShader(GL_VERTEX_SHADER, kGlesVProgTextGLCore);
+			g_FShader       = CreateShader(GL_FRAGMENT_SHADER, kGlesFShaderTextGLCore);
+		}
 
 
 		g_Program = glCreateProgram();
@@ -722,7 +752,10 @@ static void DoEventGraphicsDeviceGLES(UnityGfxDeviceEventType eventType)
 		glBindAttribLocation(g_Program, 2, "color");
 		glAttachShader(g_Program, g_VProg);
 		glAttachShader(g_Program, g_FShader);
-
+	#if SUPPORT_OPENGL_CORE
+		if(s_DeviceType == kUnityGfxRendererOpenGLCore)
+			glBindFragDataLocation(g_Program, 0, "fragColor");
+	#endif
 		glLinkProgram(g_Program);
 
 		g_WorldMatrixUniformIndex	= glGetUniformLocation(g_Program, "worldMatrix");
@@ -804,10 +837,11 @@ static void SetDefaultGraphicsState ()
 	#endif
 	
 	
-	#if SUPPORT_OPENGLES
+	#if SUPPORT_OPENGL_UNIFIED
 	// OpenGL ES case
 	if (s_DeviceType == kUnityGfxRendererOpenGLES20 ||
-		s_DeviceType == kUnityGfxRendererOpenGLES30)
+		s_DeviceType == kUnityGfxRendererOpenGLES30 ||
+		s_DeviceType == kUnityGfxRendererOpenGLCore)
 	{
 		glDisable(GL_CULL_FACE);
 		glDisable(GL_BLEND);
@@ -1022,8 +1056,11 @@ static void DoRendering (const float* worldMatrix, const float* identityMatrix, 
 
 	#if SUPPORT_OPENGL
 	// OpenGL
-	if (s_DeviceType == kUnityGfxRendererOpenGL)
+	if (s_DeviceType == kUnityGfxRendererOpenGL||
+		s_DeviceType == kUnityGfxRendererOpenGLCore)
 	{
+			DebugInUnity("kUnityGfxRendererOpenGLCore");
+
 		// Transformation matrices
 		glMatrixMode (GL_MODELVIEW);
 		glLoadMatrixf (worldMatrix);
@@ -1052,19 +1089,20 @@ static void DoRendering (const float* worldMatrix, const float* identityMatrix, 
 			glGetTexLevelParameteriv (GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &texWidth);
 			glGetTexLevelParameteriv (GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &texHeight);
 
-			unsigned char* data = new unsigned char[texWidth*texHeight*4];
-			FillTextureFromCode (texWidth, texHeight, texHeight*4, data);
-			glTexSubImage2D (GL_TEXTURE_2D, 0, 0, 0, texWidth, texHeight, GL_RGBA, GL_UNSIGNED_BYTE, data);
-			delete[] data;
+			//unsigned char* data = new unsigned char[texWidth*texHeight*4];
+			//FillTextureFromCode (texWidth, texHeight, texHeight*4, data);
+			glTexSubImage2D (GL_TEXTURE_2D, 0, 0, 0, texWidth, texHeight, GL_RGBA, GL_UNSIGNED_BYTE, src_rgba.data);
+			//delete[] data;
 		}
 	}
 	#endif
 	
-	#if SUPPORT_OPENGLES
+	#if SUPPORT_OPENGL_UNIFIED
 	// OpenGLES case
 
 	if (s_DeviceType == kUnityGfxRendererOpenGLES20 ||
-		s_DeviceType == kUnityGfxRendererOpenGLES30)
+		s_DeviceType == kUnityGfxRendererOpenGLES30 ||
+		s_DeviceType == kUnityGfxRendererOpenGLCore)
 	{
 		// Tweak the projection matrix a bit to make it match what identity projection would do in D3D case.
 		projectionMatrix[10] = 2.0f;
@@ -1073,7 +1111,13 @@ static void DoRendering (const float* worldMatrix, const float* identityMatrix, 
 		glUseProgram(g_Program);
 		glUniformMatrix4fv(g_WorldMatrixUniformIndex, 1, GL_FALSE, worldMatrix);
 		glUniformMatrix4fv(g_ProjMatrixUniformIndex, 1, GL_FALSE, projectionMatrix);
-
+#if SUPPORT_OPENGL_CORE
+		if (s_DeviceType == kUnityGfxRendererOpenGLCore)
+		{
+			glGenVertexArrays(1, &g_VertexArray);
+			glBindVertexArray(g_VertexArray);
+		}
+#endif
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		const int stride = 3*sizeof(float) + sizeof(unsigned int);
@@ -1089,13 +1133,25 @@ static void DoRendering (const float* worldMatrix, const float* identityMatrix, 
 		{
 			GLuint gltex = (GLuint)(size_t)(g_TexturePointer);
 			glBindTexture(GL_TEXTURE_2D, gltex);
+#if SUPPORT_OPENGL_CORE
+			if (s_DeviceType == kUnityGfxRendererOpenGLCore)
+			{
+				glGetTexLevelParameteriv (GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &g_TexWidth);
+				glGetTexLevelParameteriv (GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &g_TexHeight);
+			}
+#endif
 
-			unsigned char* data = new unsigned char[g_TexWidth*g_TexHeight*4];
-			FillTextureFromCode(g_TexWidth, g_TexHeight, g_TexHeight*4, data);
-			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, g_TexWidth, g_TexHeight, GL_RGBA, GL_UNSIGNED_BYTE, data);
-			delete[] data;
+			//unsigned char* data = new unsigned char[g_TexWidth*g_TexHeight*4];
+			//FillTextureFromCode(g_TexWidth, g_TexHeight, g_TexHeight*4, data);
+			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, g_TexWidth, g_TexHeight, GL_RGBA, GL_UNSIGNED_BYTE, src_rgba.data);
+			//delete[] data;
 		}
-
+#if SUPPORT_OPENGL_CORE
+		if (s_DeviceType == kUnityGfxRendererOpenGLCore)
+		{
+			glDeleteVertexArrays(1, &g_VertexArray);
+		}
+#endif
 	}
 	#endif
 }

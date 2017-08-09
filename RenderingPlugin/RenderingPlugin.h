@@ -43,4 +43,5 @@
 	#define SUPPORT_OPENGL_ES 1
 #elif UNITY_OSX || UNITY_LINUX
 	#define SUPPORT_OPENGL 1
+	#define SUPPORT_OPENGL_CORE 1
 #endif
