@@ -97,45 +97,66 @@ std::ifstream& VideoSource::GotoLine(std::ifstream& file, unsigned int num)
 
 bool VideoSource::readCamPoseFile(std::string filename)
 {
-	ifstream myReadFile;
-	myReadFile.open(filename.c_str (), ios::in);
-	if(!myReadFile.is_open ())
-	{
-		return false;
-	}
-	myReadFile.seekg(ios::beg);
+	// ifstream myReadFile;
+	// myReadFile.open(filename.c_str (), ios::in);
+	// if(!myReadFile.is_open ())
+	// {
+	// 	return false;
+	// }
+	// myReadFile.seekg(ios::beg);
 
-	float val;
+	// float val;
 	std::vector<float> pos(16);
-	//pos.reserve(16);
-	// go to line 2 to read translations
-	GotoLine(myReadFile, 2);
-	myReadFile >> val; pos[3] = val; //TX
-	myReadFile >> val; pos[7] = val; //TY
-	myReadFile >> val; pos[11] = val; //TZ
+	// //pos.reserve(16);
+	// // go to line 2 to read translations
+	// GotoLine(myReadFile, 2);
+	// myReadFile >> val; pos[3] = val; //TX
+	// myReadFile >> val; pos[7] = val; //TY
+	// myReadFile >> val; pos[11] = val; //TZ
 
-	// go to line 7 to read rotations
-	GotoLine(myReadFile, 7);
+	// // go to line 7 to read rotations
+	// GotoLine(myReadFile, 7);
 
-	myReadFile >> val; pos[0] = val;
-	myReadFile >> val; pos[1] = val;
-	myReadFile >> val; pos[2] = val;
+	// myReadFile >> val; pos[0] = val;
+	// myReadFile >> val; pos[1] = val;
+	// myReadFile >> val; pos[2] = val;
 
-	myReadFile >> val; pos[4] = val;
-	myReadFile >> val; pos[5] = val;
-	myReadFile >> val; pos[6] = val;
+	// myReadFile >> val; pos[4] = val;
+	// myReadFile >> val; pos[5] = val;
+	// myReadFile >> val; pos[6] = val;
 
-	myReadFile >> val; pos[8] = val;
-	myReadFile >> val; pos[9] = val;
-	myReadFile >> val; pos[10] = val;
+	// myReadFile >> val; pos[8] = val;
+	// myReadFile >> val; pos[9] = val;
+	// myReadFile >> val; pos[10] = val;
 
+	// pos[12] = 0.0;
+	// pos[13] = 0.0;
+	// pos[14] = 0.0;
+	// pos[15] = 1.0; //Scale
+
+	// // close file
+	// myReadFile.close();
+	Mat TVector, RMatrix;
+	FileStorage fs(filename.c_str (), FileStorage::READ);
+	fs["TVector"] >> TVector;
+	fs["RMatrix"] >> RMatrix;
+	fs.release();
+	pos[3]=TVector.at<float>(0,0);
+	pos[7]=TVector.at<float>(0,1);
+	pos[11]=TVector.at<float>(0,2);
+	pos[0]=RMatrix.at<float>(0,0);
+	pos[1]=RMatrix.at<float>(0,1);
+	pos[2]=RMatrix.at<float>(0,2);
+	pos[4]=RMatrix.at<float>(1,0);
+	pos[5]=RMatrix.at<float>(1,1);
+	pos[6]=RMatrix.at<float>(1,2);
+	pos[8]=RMatrix.at<float>(2,0);
+	pos[9]=RMatrix.at<float>(2,1);
+	pos[10]=RMatrix.at<float>(2,2);
 	pos[12] = 0.0;
 	pos[13] = 0.0;
 	pos[14] = 0.0;
 	pos[15] = 1.0; //Scale
-
-	// close file
-	myReadFile.close();
 	poses.push_back(pos);
 
 	return true;

@@ -259,8 +259,8 @@ public class UseRenderingPlugin : MonoBehaviour
             W2C_matrix.m30 = (float)Pose[12];
             W2C_matrix.m31 = (float)Pose[13];
             W2C_matrix.m32 = (float)Pose[14];
-            W2C_matrix.m33 = (float)Pose[15];
-          //  Debug.Log(W2C_matrix);
+            W2C_matrix.m33 = 1;
+            //Debug.Log(W2C_matrix);
             Matrix4x4 transformationMatrix = LHMatrixFromRHMatrix(W2C_matrix);
             Matrix4x4 pose = transformationMatrix;
 
@@ -269,8 +269,8 @@ public class UseRenderingPlugin : MonoBehaviour
 
             SingleCamera.transform.localPosition = arPosition;
             SingleCamera.transform.localRotation = arRotation;
-            SingleCamera.transform.Rotate(Vector3.up * 180f);
-            SingleCamera.transform.Rotate(Vector3.forward * 180f);
+            SingleCamera.transform.Rotate(Vector3.up * 90f);
+            SingleCamera.transform.Rotate(Vector3.forward * -90f);
 		//}
 	}
 
