@@ -1,0 +1,15 @@
+%YAML:1.0
+TVector: !!opencv-matrix
+   rows: 3
+   cols: 1
+   dt: f
+   data: [ 0., 0., 0. ]
+RMatrix: !!opencv-matrix
+   rows: 3
+   cols: 3
+   dt: f
+   data: [ 0., -1., 0., 0., 0., 1., 1., 0., 0. ]
+fx: 5.4068603515625000e+02
+fy: 5.4068603515625000e+02
+cx: 4.7975000000000000e+02
+cy: 2.6975000000000000e+02
