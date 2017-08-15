@@ -59,7 +59,7 @@ bool VideoSource::open_webcam(int index)
 		//poses.reserve(451);
 		for (int i = 1; i <= IMAGE_NUM; i++)
 		{
-			sprintf(filename_img, "/home/long/ar/UnityProject/rgb/%d.jpg", i);
+			sprintf(filename_img, "/home/long/ar/UnityProject/rgb/%d.png", i);
 			sprintf(filename_pos, "/home/long/ar/UnityProject/rgb/%d.txt", i);
 			image = cv::imread(filename_img);
 			images.push_back(image.clone());

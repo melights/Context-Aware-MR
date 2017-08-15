@@ -1059,7 +1059,7 @@ static void DoRendering (const float* worldMatrix, const float* identityMatrix, 
 	if (s_DeviceType == kUnityGfxRendererOpenGL||
 		s_DeviceType == kUnityGfxRendererOpenGLCore)
 	{
-			DebugInUnity("kUnityGfxRendererOpenGLCore");
+			//DebugInUnity("kUnityGfxRendererOpenGLCore");
 
 		// Transformation matrices
 		glMatrixMode (GL_MODELVIEW);

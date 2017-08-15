@@ -19,7 +19,7 @@
 ////current PTAM-demo machine camera setup is flipped 90.
 #define OPENCV_VIDEO_W 1080
 #define OPENCV_VIDEO_H 1080
-#define IMAGE_NUM 1014
+#define IMAGE_NUM 682
 //
 ////image size for tracking, usually smaller for faster frame rate.
 //#define TRACK_IMAGE_W 540
