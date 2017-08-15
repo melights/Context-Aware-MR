@@ -78,6 +78,7 @@
      <Compile Include="Assets\ZED\Scripts\ZEDManagerVR.cs" />
      <Compile Include="Assets\ZED\Scripts\ZEDPositionManager.cs" />
      <None Include="Assets\ZED\Shaders\S_ZED_ENCODED_COLOUR.shader" />
+     <None Include="Assets\Shaders\InvisibleShadowCaster.shader" />
      <None Include="Assets\ZED\Shaders\S_ZED_Blur.shader" />
      <None Include="Assets\ZED\Shaders\S_ZED_GreenScreen.shader" />
      <None Include="Assets\ZED\Shaders\S_ZED_RGB_Depth.shader" />
