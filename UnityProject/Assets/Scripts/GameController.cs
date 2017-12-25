@@ -284,7 +284,7 @@ public class GameController : MonoBehaviour {
             newDecal.transform.SetParent(decalParent, false);
 
             // Orientate to normal
-            newDecal.transform.SetPositionAndRotation(hitWsPosition, Quaternion.LookRotation(hitWsNormal, Vector3.up));
+            newDecal.transform.SetPositionAndRotation(hitWsPosition, Quaternion.LookRotation(-hitWsNormal, Vector3.up));
         }
     }
 }
